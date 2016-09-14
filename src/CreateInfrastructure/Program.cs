@@ -45,6 +45,7 @@ namespace CreateInfrastructure
                 }, Console.Out);
 
                 Console.WriteLine("Done.");
+                // &highlight=namespaces,types,typesCamelHump&highlightPreTag=$&highlightPostTag=$&search=al
             }
             catch (Exception ex)
             {
@@ -61,9 +62,9 @@ namespace CreateInfrastructure
                 Fields = new[]
                 {
                     new Field("id", DataType.String) { IsKey = true, IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = false },
-                    new Field("namespaces", DataType.Collection(DataType.String)) { IsRetrievable = true, IsFilterable = true, IsSortable = false, IsFacetable = true, IsSearchable = true, IndexAnalyzer = AnalyzerName.Create("name_index"), SearchAnalyzer = AnalyzerName.Create("name_search") },
-                    new Field("types", DataType.Collection(DataType.String)) { IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = true, IndexAnalyzer = AnalyzerName.Create("name_index"), SearchAnalyzer = AnalyzerName.Create("name_search") },
-                    new Field("typesCamelHump", DataType.Collection(DataType.String)) { IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = true, IndexAnalyzer = AnalyzerName.Create("camel_hump_index"), SearchAnalyzer = AnalyzerName.Create("camel_hump_search") },
+                    new Field("namespaces", DataType.Collection(DataType.String)) { IsRetrievable = false, IsFilterable = true, IsSortable = false, IsFacetable = true, IsSearchable = true, IndexAnalyzer = AnalyzerName.Create("name_index"), SearchAnalyzer = AnalyzerName.Create("name_search") },
+                    new Field("types", DataType.Collection(DataType.String)) { IsRetrievable = false, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = true, IndexAnalyzer = AnalyzerName.Create("name_index"), SearchAnalyzer = AnalyzerName.Create("name_search") },
+                    new Field("typesCamelHump", DataType.Collection(DataType.String)) { IsRetrievable = false, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = true, IndexAnalyzer = AnalyzerName.Create("camel_hump_index"), SearchAnalyzer = AnalyzerName.Create("camel_hump_search") },
                     new Field("packageId", DataType.String) { IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = false },
                     new Field("packageVersion", DataType.String) { IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = false },
                     new Field("preview", DataType.Boolean) { IsRetrievable = false, IsFilterable = true, IsSortable = false, IsFacetable = true, IsSearchable = false },
