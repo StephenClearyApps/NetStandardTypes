@@ -129,10 +129,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AzureSearchUtilities.cs" />
+    <Compile Include="CecilExtensions.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EntryPoint.cs" />
+    <Compile Include="FrameworkNameExtensions.cs" />
     <Compile Include="IndexPackageRequest.cs" />
+    <Compile Include="NugetExtensions.cs" />
     <Compile Include="NullAssemblyResolver.cs" />
+    <Compile Include="PackageArchiveReaderWithRef.cs" />
     <Compile Include="PackageDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringExtensions.cs" />

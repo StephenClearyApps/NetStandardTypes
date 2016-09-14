@@ -11,7 +11,6 @@ using Mono.Cecil;
 using Nito.Comparers;
 using NuGet;
 using NuGet.Frameworks;
-using NuGet.Packaging;
 using Polly;
 
 namespace PackageIndexer.Logic
@@ -59,16 +58,7 @@ namespace PackageIndexer.Logic
             var packageStream = package.GetStream();
             var packageReader = new PackageArchiveReaderWithRef(packageStream, leaveStreamOpen: true);
 
-            var netstandardFrameworks = new HashSet<FrameworkName>(EqualityComparerBuilder.For<FrameworkName>().EquateBy(x => x.FullName, StringComparer.InvariantCultureIgnoreCase));
-            foreach (var target in packageReader.GetSupportedFrameworks()
-                .Select(x => new FrameworkName(x.DotNetFrameworkName))
-                .Where(IsNetStandard))
-            {
-                netstandardFrameworks.Add(target);
-            }
-            var supportedFrameworks = netstandardFrameworks.OrderBy(x => x.Version).ToArray();
-
-            foreach (var framework in supportedFrameworks)
+            foreach (var framework in SupportedFrameworks(packageReader))
             {
                 var netstandardVersion = framework.Version.Major * 256 + framework.Version.Minor;
                 var current = new PackageDocument
@@ -81,7 +71,7 @@ namespace PackageIndexer.Logic
                     TotalDownloadCount = package.DownloadCount,
                     NetstandardVersion = netstandardVersion,
                 };
-                foreach (var path in GetCompatibleAssemblyReferences(packageReader, framework).Where(x => x.EndsWith(".dll")))
+                foreach (var path in packageReader.GetCompatibleAssemblyReferences(framework).Where(x => x.EndsWith(".dll")))
                 {
                     var dllStream = new MemoryStream();
                     packageReader.GetStream(path).CopyTo(dllStream);
@@ -100,7 +90,7 @@ namespace PackageIndexer.Logic
                             namespaces.Add(type.Namespace);
                             current.Namespaces.Add(type.Namespace);
                         }
-                        var name = type.Namespace + "." + TypeName(type);
+                        var name = type.Namespace + "." + type.TypeName();
                         if (!types.Contains(name))
                         {
                             types.Add(name);
@@ -113,63 +103,17 @@ namespace PackageIndexer.Logic
             }
         }
 
-        private static bool IsNetStandard(FrameworkName frameworkName)
+        private static FrameworkName[] SupportedFrameworks(PackageArchiveReaderWithRef packageReader)
         {
-            var name = Prefix(frameworkName.Identifier);
-            return name.Equals(".netstandard", StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        private static readonly char[] Numbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-
-        private static string Prefix(string framework)
-        {
-            var prefixOffset = framework.IndexOfAny(Numbers);
-            return prefixOffset == -1 ? framework : framework.Substring(0, prefixOffset);
-        }
-
-        private static string TypeName(TypeDefinition type)
-        {
-            var name = type.Name.StripBacktickSuffix();
-            var result = name.Name;
-            if (name.Value > 0)
-                result += "<" + string.Join(",", type.GenericParameters.Take(name.Value).Select(x => x.Name)) + ">";
-            return result;
-        }
-
-        private static IEnumerable<string> GetCompatibleAssemblyReferences(PackageArchiveReaderWithRef package, FrameworkName target)
-        {
-            var framework = NuGetFramework.ParseFrameworkName(target.FullName, DefaultFrameworkNameProvider.Instance);
-            var result = NuGetFrameworkUtility.GetNearest(package.GetRefItems(), framework);
-            if (result != null)
+            var netstandardFrameworks = new HashSet<FrameworkName>(EqualityComparerBuilder.For<FrameworkName>().EquateBy(x => x.FullName, StringComparer.InvariantCultureIgnoreCase));
+            foreach (var target in packageReader.GetSupportedFrameworks()
+                .Select(x => new FrameworkName(x.DotNetFrameworkName))
+                .Where(x => x.IsNetStandard()))
             {
-                var items = result.Items.ToArray();
-                if (items.Length != 0)
-                    return items;
+                netstandardFrameworks.Add(target);
             }
-            result = NuGetFrameworkUtility.GetNearest(package.GetLibItems(), framework);
-            return result == null ? Enumerable.Empty<string>() : result.Items;
+            var supportedFrameworks = netstandardFrameworks.OrderBy(x => x.Version).ToArray();
+            return supportedFrameworks;
         }
-
-        private sealed class PackageArchiveReaderWithRef : PackageArchiveReader
-        {
-            public PackageArchiveReaderWithRef(Stream stream, bool leaveStreamOpen)
-                : base(stream, leaveStreamOpen)
-            {
-            }
-
-            public IEnumerable<FrameworkSpecificGroup> GetRefItems()
-            {
-                return GetFileGroups(PackagingConstants.Folders.Ref);
-            }
-
-            public new IEnumerable<NuGetFramework> GetSupportedFrameworks()
-            {
-                var frameworks = new HashSet<NuGetFramework>(new NuGetFrameworkFullComparer());
-                frameworks.UnionWith(base.GetSupportedFrameworks());
-                frameworks.UnionWith(GetRefItems().Select(x => x.TargetFramework));
-                return frameworks.OrderBy(x => x, new NuGetFrameworkSorter());
-            }
-        }
-
     }
 }
