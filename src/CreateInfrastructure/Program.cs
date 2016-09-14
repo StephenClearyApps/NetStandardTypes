@@ -61,8 +61,9 @@ namespace CreateInfrastructure
                 Fields = new[]
                 {
                     new Field("id", DataType.String) { IsKey = true, IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = false },
-                    new Field("namespaces", DataType.Collection(DataType.String)) { IsRetrievable = true, IsFilterable = true, IsSortable = false, IsFacetable = true, IsSearchable = true, Analyzer = AnalyzerName.Create("namespaces") },
-                    new Field("types", DataType.Collection(DataType.String)) { IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = true, Analyzer = AnalyzerName.Create("namespaces") },
+                    new Field("namespaces", DataType.Collection(DataType.String)) { IsRetrievable = true, IsFilterable = true, IsSortable = false, IsFacetable = true, IsSearchable = true, IndexAnalyzer = AnalyzerName.Create("name_index"), SearchAnalyzer = AnalyzerName.Create("name_search") },
+                    new Field("types", DataType.Collection(DataType.String)) { IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = true, IndexAnalyzer = AnalyzerName.Create("name_index"), SearchAnalyzer = AnalyzerName.Create("name_search") },
+                    new Field("typesCamelHump", DataType.Collection(DataType.String)) { IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = true, IndexAnalyzer = AnalyzerName.Create("camel_hump_index"), SearchAnalyzer = AnalyzerName.Create("camel_hump_search") },
                     new Field("packageId", DataType.String) { IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = false },
                     new Field("packageVersion", DataType.String) { IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = false },
                     new Field("preview", DataType.Boolean) { IsRetrievable = false, IsFilterable = true, IsSortable = false, IsFacetable = true, IsSearchable = false },
@@ -77,23 +78,44 @@ namespace CreateInfrastructure
                 },
                 CharFilters = new CharFilter[]
                 {
-                    new MappingCharFilter
-                    {
-                        Name = "period_to_space",
-                        Mappings = new[] { @".=>\u0020" },
-                    },
                     new PatternReplaceCharFilter
                     {
                         Name = "remove_generics",
                         Pattern = "<[^>]*>",
                         Replacement = ".",
                     },
+                    new PatternReplaceCharFilter
+                    {
+                        Name = "remove_non_uppercase",
+                        Pattern = "[^A-Z]+",
+                        Replacement = ".",
+                    },
+                    new MappingCharFilter
+                    {
+                        Name = "period_to_space",
+                        Mappings = new[] { @".=>\u0020" },
+                    },
+                    new MappingCharFilter
+                    {
+                        Name = "period_to_empty_string",
+                        Mappings = new[] { @".=>" },
+                    },
+                },
+                TokenFilters = new TokenFilter[]
+                {
+                    new EdgeNGramTokenFilter
+                    {
+                        Name = "my_ngram",
+                        MinGram = 2,
+                        MaxGram = 16,
+                        Side = EdgeNGramTokenFilterSide.Front,
+                    },
                 },
                 Analyzers = new Analyzer[]
                 {
                     new CustomAnalyzer
                     {
-                        Name = "namespaces",
+                        Name = "name_search",
                         CharFilters = new []
                         {
                             CharFilterName.Create("remove_generics"),
@@ -103,6 +125,46 @@ namespace CreateInfrastructure
                         TokenFilters = new []
                         {
                             TokenFilterName.Lowercase, 
+                        },
+                    },
+                    new CustomAnalyzer
+                    {
+                        Name = "name_index",
+                        CharFilters = new []
+                        {
+                            CharFilterName.Create("remove_generics"),
+                            CharFilterName.Create("period_to_space"),
+                        },
+                        Tokenizer = TokenizerName.Whitespace,
+                        TokenFilters = new []
+                        {
+                            TokenFilterName.Lowercase,
+                            TokenFilterName.Create("my_ngram"),
+                        },
+                    },
+                    new CustomAnalyzer
+                    {
+                        Name = "camel_hump_search",
+                        Tokenizer = TokenizerName.Whitespace,
+                        TokenFilters = new []
+                        {
+                            TokenFilterName.Lowercase,
+                        },
+                    },
+                    new CustomAnalyzer
+                    {
+                        Name = "camel_hump_index",
+                        CharFilters = new []
+                        {
+                            CharFilterName.Create("remove_generics"),
+                            CharFilterName.Create("remove_non_uppercase"),
+                            CharFilterName.Create("period_to_empty_string"),
+                        },
+                        Tokenizer = TokenizerName.Keyword,
+                        TokenFilters = new []
+                        {
+                            TokenFilterName.Lowercase,
+                            TokenFilterName.Create("my_ngram"),
                         },
                     },
                 },

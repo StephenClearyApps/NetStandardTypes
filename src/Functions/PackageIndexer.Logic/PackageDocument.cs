@@ -15,6 +15,8 @@ namespace PackageIndexer.Logic
 
         public List<string> Types { get; set; } = new List<string>();
 
+        public List<string> TypesCamelHump { get; set; } = new List<string>();
+
         public string PackageId { get; set; }
 
         public string PackageVersion { get; set; }

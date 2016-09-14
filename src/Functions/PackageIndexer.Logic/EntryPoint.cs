@@ -95,6 +95,7 @@ namespace PackageIndexer.Logic
                         {
                             types.Add(name);
                             current.Types.Add(name);
+                            current.TypesCamelHump.Add(type.TypeName());
                         }
                     }
                 }
