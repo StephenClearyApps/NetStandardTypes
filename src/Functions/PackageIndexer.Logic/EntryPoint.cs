@@ -127,7 +127,7 @@ namespace PackageIndexer.Logic
             var name = type.Name.StripBacktickSuffix();
             var result = name.Name;
             if (name.Value > 0)
-                result += "<" + string.Join(", ", type.GenericParameters.Take(name.Value).Select(x => x.Name)) + ">";
+                result += "<" + string.Join(",", type.GenericParameters.Take(name.Value).Select(x => x.Name)) + ">";
             return result;
         }
 

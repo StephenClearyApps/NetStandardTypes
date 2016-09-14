@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
+using PackageIndexer.Logic;
 
 namespace CreateInfrastructure
 {
@@ -25,6 +26,12 @@ namespace CreateInfrastructure
                 Console.WriteLine("Creating index...\n");
                 serviceClient.Indexes.Create(IndexDefinition());
 
+                EntryPoint.Run(new IndexPackageRequest()
+                {
+                    PackageId = "Nito.Collections.Deque",
+                    PackageVersion = "1.0.0",
+                }, Console.Out);
+
                 Console.WriteLine("Done.");
             }
             catch (Exception ex)
@@ -42,8 +49,8 @@ namespace CreateInfrastructure
                 Fields = new[]
                 {
                     new Field("id", DataType.String) { IsKey = true, IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = false },
-                    new Field("namespaces", DataType.Collection(DataType.String)) { IsRetrievable = false, IsFilterable = true, IsSortable = false, IsFacetable = true, IsSearchable = true },
-                    new Field("types", DataType.Collection(DataType.String)) { IsRetrievable = false, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = true },
+                    new Field("namespaces", DataType.Collection(DataType.String)) { IsRetrievable = true, IsFilterable = true, IsSortable = false, IsFacetable = true, IsSearchable = true, Analyzer = AnalyzerName.Create("namespaces") },
+                    new Field("types", DataType.Collection(DataType.String)) { IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = true, Analyzer = AnalyzerName.Create("namespaces") },
                     new Field("packageId", DataType.String) { IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = false },
                     new Field("packageVersion", DataType.String) { IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = false },
                     new Field("preview", DataType.Boolean) { IsRetrievable = false, IsFilterable = true, IsSortable = false, IsFacetable = true, IsSearchable = false },
@@ -54,7 +61,37 @@ namespace CreateInfrastructure
                 CorsOptions = new CorsOptions()
                 {
                     AllowedOrigins = new[] { "*" },
-                    MaxAgeInSeconds = (long)TimeSpan.FromHours(2).TotalSeconds,
+                    MaxAgeInSeconds = (long) TimeSpan.FromHours(2).TotalSeconds,
+                },
+                CharFilters = new CharFilter[]
+                {
+                    new MappingCharFilter
+                    {
+                        Name = "period_to_space",
+                        Mappings = new[] { @".=>\u0020" },
+                    },
+                    new PatternReplaceCharFilter
+                    {
+                        Name = "remove_generics",
+                        Pattern = "<[^>]*>",
+                        Replacement = @"",
+                    },
+                },
+                Analyzers = new Analyzer[]
+                {
+                    new CustomAnalyzer
+                    {
+                        Name = "namespaces",
+                        CharFilters = new []
+                        {
+                            CharFilterName.Create("period_to_space"),
+                        },
+                        Tokenizer = TokenizerName.Whitespace,
+                        TokenFilters = new []
+                        {
+                            TokenFilterName.Lowercase, 
+                        },
+                    },
                 },
             };
         }
