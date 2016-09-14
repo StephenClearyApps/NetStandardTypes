@@ -32,6 +32,18 @@ namespace CreateInfrastructure
                     PackageVersion = "1.0.0",
                 }, Console.Out);
 
+                EntryPoint.Run(new IndexPackageRequest()
+                {
+                    PackageId = "Nito.AsyncEx.Coordination",
+                    PackageVersion = "1.0.2",
+                }, Console.Out);
+
+                EntryPoint.Run(new IndexPackageRequest()
+                {
+                    PackageId = "System.Threading.Tasks",
+                    PackageVersion = "4.0.11",
+                }, Console.Out);
+
                 Console.WriteLine("Done.");
             }
             catch (Exception ex)
@@ -74,7 +86,7 @@ namespace CreateInfrastructure
                     {
                         Name = "remove_generics",
                         Pattern = "<[^>]*>",
-                        Replacement = @"",
+                        Replacement = ".",
                     },
                 },
                 Analyzers = new Analyzer[]
@@ -84,6 +96,7 @@ namespace CreateInfrastructure
                         Name = "namespaces",
                         CharFilters = new []
                         {
+                            CharFilterName.Create("remove_generics"),
                             CharFilterName.Create("period_to_space"),
                         },
                         Tokenizer = TokenizerName.Whitespace,

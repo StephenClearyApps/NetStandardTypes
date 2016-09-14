@@ -60,21 +60,26 @@ namespace PackageIndexer.Logic
             var packageReader = new PackageArchiveReaderWithRef(packageStream, leaveStreamOpen: true);
 
             var netstandardFrameworks = new HashSet<FrameworkName>(EqualityComparerBuilder.For<FrameworkName>().EquateBy(x => x.FullName, StringComparer.InvariantCultureIgnoreCase));
-            foreach (var target in package.GetSupportedFrameworks().Where(IsNetStandard))
+            foreach (var target in packageReader.GetSupportedFrameworks()
+                .Select(x => new FrameworkName(x.DotNetFrameworkName))
+                .Where(IsNetStandard))
+            {
                 netstandardFrameworks.Add(target);
+            }
             var supportedFrameworks = netstandardFrameworks.OrderBy(x => x.Version).ToArray();
 
             foreach (var framework in supportedFrameworks)
             {
+                var netstandardVersion = framework.Version.Major * 256 + framework.Version.Minor;
                 var current = new PackageDocument
                 {
-                    Id = AzureSearchUtilities.EncodeDocumentKey(request.PackageId + "$" + (request.PackageVersion.Contains('-') ? 1 : 0)),
+                    Id = AzureSearchUtilities.EncodeDocumentKey(request.PackageId + "$" + (request.PackageVersion.Contains('-') ? 1 : 0) + "$" + netstandardVersion.ToString("X4")),
                     PackageId = request.PackageId,
                     PackageVersion = request.PackageVersion,
                     Preview = request.PackageVersion.Contains('-'),
                     Published = package.Published.Value,
                     TotalDownloadCount = package.DownloadCount,
-                    NetstandardVersion = framework.Version.Major * 256 + framework.Version.Minor,
+                    NetstandardVersion = netstandardVersion,
                 };
                 foreach (var path in GetCompatibleAssemblyReferences(packageReader, framework).Where(x => x.EndsWith(".dll")))
                 {
