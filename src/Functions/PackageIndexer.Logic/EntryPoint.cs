@@ -66,7 +66,7 @@ namespace PackageIndexer.Logic
                     Id = AzureSearchUtilities.EncodeDocumentKey(request.PackageId + "$" + (request.PackageVersion.Contains('-') ? 1 : 0) + "$" + netstandardVersion.ToString("X4")),
                     PackageId = request.PackageId,
                     PackageVersion = request.PackageVersion,
-                    Preview = request.PackageVersion.Contains('-'),
+                    Prerelease = request.PackageVersion.Contains('-'),
                     Published = package.Published.Value,
                     TotalDownloadCount = package.DownloadCount,
                     NetstandardVersion = netstandardVersion,

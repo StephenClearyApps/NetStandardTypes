@@ -67,7 +67,7 @@ namespace CreateInfrastructure
                     new Field("typesCamelHump", DataType.Collection(DataType.String)) { IsRetrievable = false, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = true, IndexAnalyzer = AnalyzerName.Create("camel_hump_index"), SearchAnalyzer = AnalyzerName.Create("camel_hump_search") },
                     new Field("packageId", DataType.String) { IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = false },
                     new Field("packageVersion", DataType.String) { IsRetrievable = true, IsFilterable = false, IsSortable = false, IsFacetable = false, IsSearchable = false },
-                    new Field("preview", DataType.Boolean) { IsRetrievable = false, IsFilterable = true, IsSortable = false, IsFacetable = true, IsSearchable = false },
+                    new Field("prerelease", DataType.Boolean) { IsRetrievable = false, IsFilterable = true, IsSortable = false, IsFacetable = true, IsSearchable = false },
                     new Field("netstandardVersion", DataType.Int32) { IsRetrievable = true, IsFilterable = true, IsSortable = false, IsFacetable = true, IsSearchable = false },
                     new Field("published", DataType.DateTimeOffset) { IsRetrievable = true, IsFilterable = true, IsSortable = true, IsFacetable = false, IsSearchable = false },
                     new Field("totalDownloadCount", DataType.Int32) { IsRetrievable = true, IsFilterable = true, IsSortable = true, IsFacetable = false, IsSearchable = false },

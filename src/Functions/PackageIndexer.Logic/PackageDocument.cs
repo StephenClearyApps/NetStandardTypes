@@ -21,7 +21,7 @@ namespace PackageIndexer.Logic
 
         public string PackageVersion { get; set; }
 
-        public bool Preview { get; set; }
+        public bool Prerelease { get; set; }
 
         public int NetstandardVersion { get; set; }
 
