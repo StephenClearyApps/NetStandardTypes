@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
+using NuGet.Packaging;
 using NuGetCatalog;
+using NuGetHelpers;
 using PackageIndexer.Logic;
 
 namespace CreateInfrastructure
@@ -16,11 +18,14 @@ namespace CreateInfrastructure
         {
             var index = await ServiceIndex.CreateAsync();
             var catalog = await index.GetCatalogAsync();
-            using (var enumerator = catalog.Pages().GetEnumerator())
+            var packages = catalog.Pages().SelectMany(x => x.Packages());
+            using (var enumerator = packages.GetEnumerator())
             {
                 while (await enumerator.MoveNext())
                 {
-                    var page = enumerator.Current;
+                    var package = enumerator.Current;
+                    var metadata = package.Metadata();
+                    var frameworks = metadata.GetSupportedFrameworksWithRef().ToArray();
                 }
             }
         }

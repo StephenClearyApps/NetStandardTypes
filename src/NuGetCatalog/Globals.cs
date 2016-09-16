@@ -14,7 +14,7 @@ namespace NuGetCatalog
 
         internal static string V3Url { get; } = "https://api.nuget.org/v3/index.json";
 
-        internal static async Task<dynamic> GetJsonAsync(this HttpClient client, string url)
+        internal static async Task<JObject> GetJsonAsync(this HttpClient client, string url)
         {
             return JObject.Parse(await client.GetStringAsync(url).ConfigureAwait(false));
         }

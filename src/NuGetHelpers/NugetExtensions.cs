@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
 using NuGet.Frameworks;
+using NuGet.Packaging;
 
-namespace PackageIndexer.Logic
+namespace NuGetHelpers
 {
     public static class NugetExtensions
     {
-        public static IEnumerable<string> GetCompatibleAssemblyReferences(this PackageArchiveReaderWithRef package, FrameworkName target)
+        public static IEnumerable<string> GetCompatibleAssemblyReferences(this IPackageContentReaderWithRef package, FrameworkName target)
         {
             var framework = NuGetFramework.ParseFrameworkName(target.FullName, DefaultFrameworkNameProvider.Instance);
             var result = NuGetFrameworkUtility.GetNearest(package.GetRefItems(), framework);

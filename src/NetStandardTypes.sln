@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGetCatalog", "NuGetCatalog\NuGetCatalog.csproj", "{58FD8D8A-DC0E-478C-A8C3-710AB7B1180E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGetHelpers", "NuGetHelpers\NuGetHelpers.csproj", "{02F0B7BE-3237-4761-8405-888BE8EB617C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{58FD8D8A-DC0E-478C-A8C3-710AB7B1180E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58FD8D8A-DC0E-478C-A8C3-710AB7B1180E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58FD8D8A-DC0E-478C-A8C3-710AB7B1180E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02F0B7BE-3237-4761-8405-888BE8EB617C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02F0B7BE-3237-4761-8405-888BE8EB617C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02F0B7BE-3237-4761-8405-888BE8EB617C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02F0B7BE-3237-4761-8405-888BE8EB617C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

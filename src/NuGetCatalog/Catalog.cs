@@ -23,7 +23,7 @@ namespace NuGetCatalog
         /// </summary>
         public IAsyncEnumerable<CatalogPage> Pages()
         {
-            var pages = _content.items as JArray;
+            var pages = (JArray)_content.items;
             if (pages == null)
                 return AsyncEnumerable.Throw<CatalogPage>(UnrecognizedJson());
             return AsyncEnumerableEx.Generate(() => pages.Count - 1, async i =>

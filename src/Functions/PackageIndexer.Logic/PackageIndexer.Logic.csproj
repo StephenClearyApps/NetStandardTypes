@@ -134,7 +134,6 @@
     <Compile Include="EntryPoint.cs" />
     <Compile Include="FrameworkNameExtensions.cs" />
     <Compile Include="IndexPackageRequest.cs" />
-    <Compile Include="NugetExtensions.cs" />
     <Compile Include="NullAssemblyResolver.cs" />
     <Compile Include="PackageArchiveReaderWithRef.cs" />
     <Compile Include="PackageDocument.cs" />
@@ -144,6 +143,12 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\NuGetHelpers\NuGetHelpers.csproj">
+      <Project>{02f0b7be-3237-4761-8405-888be8eb617c}</Project>
+      <Name>NuGetHelpers</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

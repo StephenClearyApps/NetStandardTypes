@@ -11,6 +11,7 @@ using Mono.Cecil;
 using Nito.Comparers;
 using NuGet;
 using NuGet.Frameworks;
+using NuGetHelpers;
 using Polly;
 
 namespace PackageIndexer.Logic
@@ -107,7 +108,7 @@ namespace PackageIndexer.Logic
         private static FrameworkName[] SupportedFrameworks(PackageArchiveReaderWithRef packageReader)
         {
             var netstandardFrameworks = new HashSet<FrameworkName>(EqualityComparerBuilder.For<FrameworkName>().EquateBy(x => x.FullName, StringComparer.InvariantCultureIgnoreCase));
-            foreach (var target in packageReader.GetSupportedFrameworks()
+            foreach (var target in packageReader.GetSupportedFrameworksWithRef()
                 .Select(x => new FrameworkName(x.DotNetFrameworkName))
                 .Where(x => x.IsNetStandard()))
             {
