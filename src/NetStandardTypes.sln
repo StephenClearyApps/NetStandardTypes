@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageIndexer.LocalRunner"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{40FE35E1-CA2D-4E11-BF0A-636EE8146A75}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGetCatalog", "NuGetCatalog\NuGetCatalog.csproj", "{58FD8D8A-DC0E-478C-A8C3-710AB7B1180E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{40FE35E1-CA2D-4E11-BF0A-636EE8146A75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40FE35E1-CA2D-4E11-BF0A-636EE8146A75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40FE35E1-CA2D-4E11-BF0A-636EE8146A75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58FD8D8A-DC0E-478C-A8C3-710AB7B1180E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58FD8D8A-DC0E-478C-A8C3-710AB7B1180E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58FD8D8A-DC0E-478C-A8C3-710AB7B1180E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58FD8D8A-DC0E-478C-A8C3-710AB7B1180E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

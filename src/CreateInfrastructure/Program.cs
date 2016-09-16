@@ -5,16 +5,33 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
+using NuGetCatalog;
 using PackageIndexer.Logic;
 
 namespace CreateInfrastructure
 {
     class Program
     {
+        static async Task MainAsync()
+        {
+            var index = await ServiceIndex.CreateAsync();
+            var catalog = await index.GetCatalogAsync();
+            using (var enumerator = catalog.Pages().GetEnumerator())
+            {
+                while (await enumerator.MoveNext())
+                {
+                    var page = enumerator.Current;
+                }
+            }
+        }
+
         static void Main(string[] args)
         {
             try
             {
+                MainAsync().Wait();
+                return;
+
                 var serviceClient = new SearchServiceClient("netstandardtypes", new SearchCredentials(Config.AzureSearchKey));
 
                 Console.WriteLine("Deleting index...\n");

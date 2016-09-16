@@ -119,6 +119,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Interactive.Async, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Interactive.Async.3.0.0\lib\net45\System.Interactive.Async.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http.WebRequest" />
@@ -143,6 +147,10 @@
     <ProjectReference Include="..\Functions\PackageIndexer.Logic\PackageIndexer.Logic.csproj">
       <Project>{8fe56eec-bcac-4aac-97f1-e9cd4fd5ae47}</Project>
       <Name>PackageIndexer.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NuGetCatalog\NuGetCatalog.csproj">
+      <Project>{58fd8d8a-dc0e-478c-a8c3-710ab7b1180e}</Project>
+      <Name>NuGetCatalog</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
