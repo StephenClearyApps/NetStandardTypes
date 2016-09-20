@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 using static NuGetCatalog.Globals;
 
 namespace NuGetCatalog
@@ -16,7 +18,10 @@ namespace NuGetCatalog
             _content = content;
         }
 
+        public PackageIdentity PackageIdentity => new PackageIdentity(Id, NuGetVersion.Parse(Version));
+
         public string Id => (string) _content["nuget:id"];
+        public string Version => (string)_content["nuget:version"];
 
         public async Task<CatalogPackage> GetPackageAsync()
         {
