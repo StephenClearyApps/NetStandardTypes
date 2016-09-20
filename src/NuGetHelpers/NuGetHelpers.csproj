@@ -98,6 +98,7 @@
     <Compile Include="CatalogNuspecReader.cs" />
     <Compile Include="CatalogPackageReader.cs" />
     <Compile Include="CatalogPackageReaderWithRef.cs" />
+    <Compile Include="FrameworkNameExtensions.cs" />
     <Compile Include="JsonExtensions.cs" />
     <Compile Include="NugetExtensions.cs" />
     <Compile Include="PackageReaderWithRef.cs" />

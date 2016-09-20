@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -16,6 +17,7 @@ namespace NuGetCatalog
 
         internal static async Task<JObject> GetJsonAsync(this HttpClient client, string url)
         {
+            Trace.WriteLine("GET " + url);
             return JObject.Parse(await client.GetStringAsync(url).ConfigureAwait(false));
         }
 

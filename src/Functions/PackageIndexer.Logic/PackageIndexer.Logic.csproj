@@ -132,7 +132,6 @@
     <Compile Include="CecilExtensions.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EntryPoint.cs" />
-    <Compile Include="FrameworkNameExtensions.cs" />
     <Compile Include="IndexPackageRequest.cs" />
     <Compile Include="NullAssemblyResolver.cs" />
     <Compile Include="PackageArchiveReaderWithRef.cs" />

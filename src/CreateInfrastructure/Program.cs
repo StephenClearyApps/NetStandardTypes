@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 using NuGet.Packaging;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 using NuGetCatalog;
 using NuGetHelpers;
 using PackageIndexer.Logic;
@@ -16,6 +20,8 @@ namespace CreateInfrastructure
     {
         static async Task MainAsync()
         {
+            var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
             var index = await ServiceIndex.CreateAsync();
             var catalog = await index.GetCatalogAsync();
             var packages = catalog.Pages().SelectMany(x => x.Packages());
@@ -24,8 +30,15 @@ namespace CreateInfrastructure
                 while (await enumerator.MoveNext())
                 {
                     var package = enumerator.Current;
-                    var metadata = package.Metadata();
-                    var frameworks = metadata.GetSupportedFrameworksWithRef().ToArray();
+                    var id = package.Identity;
+                    var frameworks = package.Metadata().GetSupportedFrameworksWithRef().ToArray();
+                    if (!set.Contains(id.Id) && frameworks.Any(x => new FrameworkName(x.DotNetFrameworkName).IsNetStandard()))
+                    {
+                        set.Add(id.Id);
+                        Console.WriteLine(set.Count.ToString("X") + ": " + id.Id + " " + id.Version + ", " + package.Published + ", " + package.IsPrerelease + ", " + package.IsListed);
+                    }
+                    if (package.BestGuessPublicationDate == null)
+                        Debugger.Break();
                 }
             }
         }

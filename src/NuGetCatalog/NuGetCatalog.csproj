@@ -104,6 +104,7 @@
     <Compile Include="CatalogPackage.cs" />
     <Compile Include="CatalogPage.cs" />
     <Compile Include="Globals.cs" />
+    <Compile Include="JsonExtensions.cs" />
     <Compile Include="ServiceIndex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
