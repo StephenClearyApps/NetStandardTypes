@@ -28,7 +28,7 @@ namespace NuGetCatalog
                 return AsyncEnumerable.Throw<CatalogPage>(UnrecognizedJson());
             return AsyncEnumerableEx.Generate(() => pages.Count - 1, async i =>
             {
-                if (i == 0)
+                if (i < 0)
                     return Tuple.Create(false, i, default(CatalogPage));
                 var url = (string)pages[i]["@id"];
                 if (url == null)
