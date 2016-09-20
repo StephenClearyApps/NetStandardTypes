@@ -103,6 +103,7 @@
     <Compile Include="Catalog.cs" />
     <Compile Include="CatalogPackage.cs" />
     <Compile Include="CatalogPage.cs" />
+    <Compile Include="CatalogPageEntry.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="JsonExtensions.cs" />
     <Compile Include="ServiceIndex.cs" />

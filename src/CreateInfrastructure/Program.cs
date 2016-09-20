@@ -24,23 +24,29 @@ namespace CreateInfrastructure
 
             var index = await ServiceIndex.CreateAsync();
             var catalog = await index.GetCatalogAsync();
-            var packages = catalog.Pages().SelectMany(x => x.Packages());
-            using (var enumerator = packages.GetEnumerator())
+            using (var pageEnumerator = catalog.Pages().GetEnumerator())
             {
-                while (await enumerator.MoveNext())
+                while (await pageEnumerator.MoveNext())
                 {
-                    var package = enumerator.Current;
-                    var id = package.Identity;
-                    var frameworks = package.Metadata().GetSupportedFrameworksWithRef().ToArray();
-                    if (!set.Contains(id.Id) && frameworks.Any(x => new FrameworkName(x.DotNetFrameworkName).IsNetStandard()))
+                    foreach (var pageEntry in pageEnumerator.Current.Entries())
                     {
-                        set.Add(id.Id);
-                        Console.WriteLine(set.Count.ToString("X") + ": " + id.Id + " " + id.Version + ", " + package.Published + ", " + package.IsPrerelease + ", " + package.IsListed);
+                        if (set.Contains(pageEntry.Id))
+                            continue;
+                        set.Add(pageEntry.Id);
+                        var package = await pageEntry.GetPackageAsync();
+                        var id = package.Identity;
+                        var frameworks = package.Metadata().GetSupportedFrameworksWithRef().ToArray();
+                        if (frameworks.Any(x => new FrameworkName(x.DotNetFrameworkName).IsNetStandard()))
+                        {
+                            Console.WriteLine(set.Count.ToString("X") + ": " + id.Id + " " + id.Version + ", " + package.Published + ", " + package.IsPrerelease + ", " + package.IsListed);
+                        }
+                        if (package.BestGuessPublicationDate == null)
+                            Debugger.Break();
                     }
-                    if (package.BestGuessPublicationDate == null)
-                        Debugger.Break();
                 }
             }
+
+            //var packages = catalog.Pages().SelectMany(x => x.Entries());
         }
 
         static void Main(string[] args)
