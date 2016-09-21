@@ -26,15 +26,12 @@ namespace NuGetCatalog
             var pages = (JArray)_content.items;
             if (pages == null)
                 return AsyncEnumerable.Throw<CatalogPage>(UnrecognizedJson());
-            return AsyncEnumerableEx.Generate(() => pages.Count - 1, async i =>
+            return AsyncEnumerableEx.Generate(pages.Count - 1, i => i >= 0, i => i - 1, async i =>
             {
-                if (i < 0)
-                    return Tuple.Create(false, i, default(CatalogPage));
                 var url = (string)pages[i]["@id"];
                 if (url == null)
                     throw UnrecognizedJson();
-                var page = new CatalogPage(await Client.GetJsonAsync(url));
-                return Tuple.Create(true, i - 1, page);
+                return new CatalogPage(await Client.GetJsonAsync(url));
             });
         }
     }
