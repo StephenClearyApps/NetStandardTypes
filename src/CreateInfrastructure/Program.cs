@@ -18,44 +18,10 @@ namespace CreateInfrastructure
 {
     class Program
     {
-        static async Task MainAsync()
-        {
-            var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            var index = await ServiceIndex.CreateAsync();
-            var catalog = await index.GetCatalogAsync();
-            using (var pageEnumerator = catalog.Pages().GetEnumerator())
-            {
-                while (await pageEnumerator.MoveNext())
-                {
-                    foreach (var pageEntry in pageEnumerator.Current.Entries())
-                    {
-                        if (set.Contains(pageEntry.Id))
-                            continue;
-                        set.Add(pageEntry.Id);
-                        var package = await pageEntry.GetPackageAsync();
-                        var id = package.Identity;
-                        var frameworks = package.Metadata().GetSupportedFrameworksWithRef().ToArray();
-                        if (frameworks.Any(x => new FrameworkName(x.DotNetFrameworkName).IsNetStandard()))
-                        {
-                            Console.WriteLine(set.Count.ToString("X") + ": " + id.Id + " " + id.Version + ", " + package.Published + ", " + package.IsPrerelease + ", " + package.IsListed);
-                        }
-                        if (package.BestGuessPublicationDate == null)
-                            Debugger.Break();
-                    }
-                }
-            }
-
-            //var packages = catalog.Pages().SelectMany(x => x.Entries());
-        }
-
         static void Main(string[] args)
         {
             try
             {
-                MainAsync().Wait();
-                return;
-
                 var serviceClient = new SearchServiceClient("netstandardtypes", new SearchCredentials(Config.AzureSearchKey));
 
                 Console.WriteLine("Deleting index...\n");
