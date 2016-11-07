@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Polly;
 
 namespace NuGetCatalog
 {
@@ -18,7 +19,10 @@ namespace NuGetCatalog
         internal static async Task<JObject> GetJsonAsync(this HttpClient client, string url)
         {
             Trace.WriteLine("GET " + url);
-            return JObject.Parse(await client.GetStringAsync(url).ConfigureAwait(false));
+            var json = await Policy.Handle<Exception>()
+                .WaitAndRetryAsync(20, count => TimeSpan.FromSeconds(count))
+                .ExecuteAsync(() => client.GetStringAsync(url)).ConfigureAwait(false);
+            return JObject.Parse(json);
         }
 
         internal static Exception UnrecognizedJson()
