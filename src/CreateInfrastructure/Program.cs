@@ -41,7 +41,24 @@ namespace CreateInfrastructure
             await Task.WhenAll(//CreateIndexAsync(),
                 CreateQueueAsync("refresh-catalog"),
                 CreateQueueAsync("process-package"));
+            //PopulateTestPackages();
+        }
 
+        private static async Task CreateIndexAsync()
+        {
+            using (var serviceClient = new SearchServiceClient("netstandardtypes", new SearchCredentials(Config.AzureSearchKey)))
+                await serviceClient.Indexes.CreateOrUpdateAsync(IndexDefinition());
+        }
+
+        private static async Task CreateQueueAsync(string queueName)
+        {
+            var client = new CloudQueueClient(new Uri("https://netstandardtypes.queue.core.windows.net/"), new StorageCredentials("netstandardtypes", Config.AzureStorageKey));
+            var queue = client.GetQueueReference(queueName);
+            await queue.CreateIfNotExistsAsync();
+        }
+
+        private static void PopulateTestPackages()
+        {
             EntryPoint.Run(new IndexPackageRequest()
             {
                 PackageId = "Nito.Collections.Deque",
@@ -95,19 +112,6 @@ namespace CreateInfrastructure
                 PackageId = "System.Reactive.Core",
                 PackageVersion = "3.0.0",
             }, Console.Out);
-        }
-
-        private static async Task CreateIndexAsync()
-        {
-            using (var serviceClient = new SearchServiceClient("netstandardtypes", new SearchCredentials(Config.AzureSearchKey)))
-                await serviceClient.Indexes.CreateOrUpdateAsync(IndexDefinition());
-        }
-
-        private static async Task CreateQueueAsync(string queueName)
-        {
-            var client = new CloudQueueClient(new Uri("https://netstandardtypes.queue.core.windows.net/"), new StorageCredentials("netstandardtypes", Config.AzureStorageKey));
-            var queue = client.GetQueueReference(queueName);
-            await queue.CreateIfNotExistsAsync();
         }
 
         private static Index IndexDefinition()
