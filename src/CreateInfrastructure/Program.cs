@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Queue;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
@@ -22,70 +24,7 @@ namespace CreateInfrastructure
         {
             try
             {
-                var serviceClient = new SearchServiceClient("netstandardtypes", new SearchCredentials(Config.AzureSearchKey));
-
-                Console.WriteLine("Deleting index...\n");
-                if (serviceClient.Indexes.Exists("types"))
-                {
-                    serviceClient.Indexes.Delete("types");
-                }
-
-                Console.WriteLine("Creating index...\n");
-                serviceClient.Indexes.Create(IndexDefinition());
-
-                EntryPoint.Run(new IndexPackageRequest()
-                {
-                    PackageId = "Nito.Collections.Deque",
-                    PackageVersion = "1.0.0",
-                }, Console.Out);
-
-                EntryPoint.Run(new IndexPackageRequest()
-                {
-                    PackageId = "Nito.AsyncEx.Coordination",
-                    PackageVersion = "1.0.2",
-                }, Console.Out);
-
-                EntryPoint.Run(new IndexPackageRequest()
-                {
-                    PackageId = "System.Threading.Tasks",
-                    PackageVersion = "4.0.11",
-                }, Console.Out);
-
-                EntryPoint.Run(new IndexPackageRequest()
-                {
-                    PackageId = "System.Collections",
-                    PackageVersion = "4.0.11",
-                }, Console.Out);
-
-                EntryPoint.Run(new IndexPackageRequest()
-                {
-                    PackageId = "System.IO",
-                    PackageVersion = "4.1.0",
-                }, Console.Out);
-
-                EntryPoint.Run(new IndexPackageRequest()
-                {
-                    PackageId = "System.Runtime",
-                    PackageVersion = "4.1.0",
-                }, Console.Out);
-
-                EntryPoint.Run(new IndexPackageRequest()
-                {
-                    PackageId = "System.Xml.XDocument",
-                    PackageVersion = "4.0.11",
-                }, Console.Out);
-
-                EntryPoint.Run(new IndexPackageRequest()
-                {
-                    PackageId = "Newtonsoft.Json",
-                    PackageVersion = "9.0.1",
-                }, Console.Out);
-
-                EntryPoint.Run(new IndexPackageRequest()
-                {
-                    PackageId = "System.Reactive.Core",
-                    PackageVersion = "3.0.0",
-                }, Console.Out);
+                MainAsync().GetAwaiter().GetResult();
 
                 Console.WriteLine("Done.");
                 // &highlight=namespaces,types,typesCamelHump&highlightPreTag=$&highlightPostTag=$&search=al
@@ -95,6 +34,80 @@ namespace CreateInfrastructure
                 Console.WriteLine(ex);
             }
             Console.ReadKey();
+        }
+
+        private static async Task MainAsync()
+        {
+            await Task.WhenAll(//CreateIndexAsync(),
+                CreateQueueAsync("refresh-catalog"),
+                CreateQueueAsync("process-package"));
+
+            EntryPoint.Run(new IndexPackageRequest()
+            {
+                PackageId = "Nito.Collections.Deque",
+                PackageVersion = "1.0.0",
+            }, Console.Out);
+
+            EntryPoint.Run(new IndexPackageRequest()
+            {
+                PackageId = "Nito.AsyncEx.Coordination",
+                PackageVersion = "1.0.2",
+            }, Console.Out);
+
+            EntryPoint.Run(new IndexPackageRequest()
+            {
+                PackageId = "System.Threading.Tasks",
+                PackageVersion = "4.0.11",
+            }, Console.Out);
+
+            EntryPoint.Run(new IndexPackageRequest()
+            {
+                PackageId = "System.Collections",
+                PackageVersion = "4.0.11",
+            }, Console.Out);
+
+            EntryPoint.Run(new IndexPackageRequest()
+            {
+                PackageId = "System.IO",
+                PackageVersion = "4.1.0",
+            }, Console.Out);
+
+            EntryPoint.Run(new IndexPackageRequest()
+            {
+                PackageId = "System.Runtime",
+                PackageVersion = "4.1.0",
+            }, Console.Out);
+
+            EntryPoint.Run(new IndexPackageRequest()
+            {
+                PackageId = "System.Xml.XDocument",
+                PackageVersion = "4.0.11",
+            }, Console.Out);
+
+            EntryPoint.Run(new IndexPackageRequest()
+            {
+                PackageId = "Newtonsoft.Json",
+                PackageVersion = "9.0.1",
+            }, Console.Out);
+
+            EntryPoint.Run(new IndexPackageRequest()
+            {
+                PackageId = "System.Reactive.Core",
+                PackageVersion = "3.0.0",
+            }, Console.Out);
+        }
+
+        private static async Task CreateIndexAsync()
+        {
+            using (var serviceClient = new SearchServiceClient("netstandardtypes", new SearchCredentials(Config.AzureSearchKey)))
+                await serviceClient.Indexes.CreateOrUpdateAsync(IndexDefinition());
+        }
+
+        private static async Task CreateQueueAsync(string queueName)
+        {
+            var client = new CloudQueueClient(new Uri("https://netstandardtypes.queue.core.windows.net/"), new StorageCredentials("netstandardtypes", Config.AzureStorageKey));
+            var queue = client.GetQueueReference(queueName);
+            await queue.CreateIfNotExistsAsync();
         }
 
         private static Index IndexDefinition()
