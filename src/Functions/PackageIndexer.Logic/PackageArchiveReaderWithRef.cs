@@ -1,13 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading;
-using NuGet.Frameworks;
 using NuGet.Packaging;
-using NuGet.Packaging.Core;
 using NuGetHelpers;
 
-namespace PackageIndexer.Logic
+namespace NetStandardTypes.PackageIndexer
 {
     public sealed class PackageArchiveReaderWithRef : PackageArchiveReader, IPackageContentReaderWithRef
     {

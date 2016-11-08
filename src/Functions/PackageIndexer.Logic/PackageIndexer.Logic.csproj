@@ -7,7 +7,7 @@
     <ProjectGuid>{8FE56EEC-BCAC-4AAC-97F1-E9CD4FD5AE47}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PackageIndexer.Logic</RootNamespace>
+    <RootNamespace>NetStandardTypes.PackageIndexer</RootNamespace>
     <AssemblyName>PackageIndexer.Logic</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

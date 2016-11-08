@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Mono.Cecil;
 
-namespace PackageIndexer.Logic
+namespace NetStandardTypes.PackageIndexer
 {
     public static class CecilExtensions
     {

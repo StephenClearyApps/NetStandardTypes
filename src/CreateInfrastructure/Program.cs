@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
-using PackageIndexer.Logic;
+using NetStandardTypes.PackageIndexer;
 
 namespace NetStandardTypes.CreateInfrastructure
 {

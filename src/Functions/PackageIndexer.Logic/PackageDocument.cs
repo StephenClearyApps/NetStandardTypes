@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Azure.Search.Models;
 
-namespace PackageIndexer.Logic
+namespace NetStandardTypes.PackageIndexer
 {
     [SerializePropertyNamesAsCamelCase]
     public sealed class PackageDocument

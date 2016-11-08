@@ -1,21 +1,17 @@
-﻿using Microsoft.Azure.Search;
-using Microsoft.Azure.Search.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Azure.Search;
+using Microsoft.Azure.Search.Models;
 using Mono.Cecil;
-using NetStandardTypes;
 using Nito.Comparers;
 using NuGet;
-using NuGet.Frameworks;
 using NuGetHelpers;
 using Polly;
 
-namespace PackageIndexer.Logic
+namespace NetStandardTypes.PackageIndexer
 {
     public static class EntryPoint
     {

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Mono.Cecil;
 
-namespace PackageIndexer.Logic
+namespace NetStandardTypes.PackageIndexer
 {
     public sealed class NullAssemblyResolver : IAssemblyResolver
     {
