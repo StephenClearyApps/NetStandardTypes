@@ -71,6 +71,9 @@ namespace NetStandardTypes.NugetWalker
                             PackageVersion = pageEntry.Version,
                         });
                         //Console.WriteLine(count.ToString("X") + "/" + set.Count.ToString("X") + ": " + id.Id + " " + id.Version + ", " + package.BestGuessPublicationDate + ", " + package.IsPrerelease + ", " + package.IsListed);
+
+                        // Mark it as awaiting processing.
+                        await table.SetVersionAsync(pageEntry.Id, pageEntry.Version);
                     }
                 }
             }
