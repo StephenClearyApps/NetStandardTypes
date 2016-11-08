@@ -5,7 +5,7 @@ using Microsoft.Azure.Search;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Queue;
 
-namespace NetStandardTypes.Core
+namespace NetStandardTypes
 {
     public static class Config
     {

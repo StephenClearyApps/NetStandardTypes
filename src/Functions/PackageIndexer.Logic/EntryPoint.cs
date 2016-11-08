@@ -8,7 +8,7 @@ using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using Mono.Cecil;
-using NetStandardTypes.Core;
+using NetStandardTypes;
 using Nito.Comparers;
 using NuGet;
 using NuGet.Frameworks;

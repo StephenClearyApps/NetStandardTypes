@@ -1,23 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Versioning;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
-using Microsoft.WindowsAzure.Storage.Auth;
-using Microsoft.WindowsAzure.Storage.Queue;
-using NetStandardTypes.Core;
-using NuGet.Packaging;
-using NuGet.Packaging.Core;
-using NuGet.Versioning;
-using NuGetCatalog;
-using NuGetHelpers;
 using PackageIndexer.Logic;
 
-namespace CreateInfrastructure
+namespace NetStandardTypes.CreateInfrastructure
 {
     class Program
     {
