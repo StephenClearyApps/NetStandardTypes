@@ -19,17 +19,24 @@ namespace NetStandardTypes
 
         public static Task InitializeAsync() => GetTable().CreateIfNotExistsAsync();
 
-        public async Task<string> TryGetVersionAsync(string id, string version)
+        public async Task<VersionCommit> TryGetVersionCommitAsync(string id, string version)
         {
             var entity = await Entity.FindOrDefaultAsync(_table, id, NuGetVersion.Parse(version).IsPrerelease).ConfigureAwait(false);
-            return entity?.Version;
+            if (entity == null)
+                return null;
+            return new VersionCommit
+            {
+                Version = entity.Version,
+                CommitId = entity.CommitId,
+            };
         }
 
-        public Task SetVersionAsync(string id, string version)
+        public Task SetVersionAsync(string id, string version, string commitId)
         {
             var entity = new Entity(_table, id, version)
             {
                 Version = version,
+                CommitId = commitId,
                 Processed = false,
             };
             return entity.InsertOrReplaceAsync();
@@ -84,6 +91,18 @@ namespace NetStandardTypes
                 get { return Get("0", "p") == "1"; }
                 set { Set(value ? "1" : "0", "p"); }
             }
+
+            public string CommitId
+            {
+                get {  return Get(null, "c");}
+                set {  Set(value.ToLowerInvariant(), "c");}
+            }
+        }
+
+        public sealed class VersionCommit
+        {
+            public string Version { get; set; }
+            public string CommitId { get; set; }
         }
     }
 }

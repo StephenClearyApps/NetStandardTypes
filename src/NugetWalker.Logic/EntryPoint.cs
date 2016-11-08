@@ -40,20 +40,20 @@ namespace NetStandardTypes.NugetWalker
                         }
 
                         // Look up the existing entry, if any.
-                        var existing = await table.TryGetVersionAsync(pageEntry.Id, pageEntry.Version);
+                        var existing = await table.TryGetVersionCommitAsync(pageEntry.Id, pageEntry.Version);
 
                         // If the existing entry is this same one, then we're done.
-                        if (string.Equals(existing, pageEntry.Version, StringComparison.InvariantCultureIgnoreCase))
+                        if (existing != null && string.Equals(existing.CommitId, pageEntry.CommitId, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            log.WriteLine("Reached bookmark: " + pageEntry.Id + " " + pageEntry.Version);
+                            log.WriteLine("Reached bookmark: " + pageEntry.Id + " " + pageEntry.Version + " at " + pageEntry.CommitId);
                             return;
                         }
 
                         // If the existing entry is newer than this one, then skip it.
-                        //  (This can only happen if NuGet packages are published out of order. Which does seem to happen!)
-                        if (existing != null && version < NuGetVersion.Parse(existing))
+                        //  (This can only happen if NuGet packages are published out of order. Which *does* seem to happen!)
+                        if (existing?.Version != null && version <= NuGetVersion.Parse(existing.Version))
                         {
-                            log.WriteLine("Ignoring due to existing version " + existing + ": " + pageEntry.Id + " " + pageEntry.Version);
+                            log.WriteLine("Ignoring due to existing version " + existing.Version + ": " + pageEntry.Id + " " + pageEntry.Version);
                             continue;
                         }
 
@@ -76,7 +76,7 @@ namespace NetStandardTypes.NugetWalker
                         //Console.WriteLine(count.ToString("X") + "/" + set.Count.ToString("X") + ": " + id.Id + " " + id.Version + ", " + package.BestGuessPublicationDate + ", " + package.IsPrerelease + ", " + package.IsListed);
 
                         // Mark it as awaiting processing.
-                        await table.SetVersionAsync(pageEntry.Id, pageEntry.Version);
+                        await table.SetVersionAsync(pageEntry.Id, pageEntry.Version, pageEntry.CommitId);
                     }
                 }
             }

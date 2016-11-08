@@ -24,6 +24,7 @@ namespace NuGetCatalog
         public string Id => (string) _content["nuget:id"];
         public string Version => (string)_content["nuget:version"];
         public DateTimeOffset? CommitTimestamp => _content.GetDateTimeOffset("commitTimestamp");
+        public string CommitId => (string) _content["commitId"];
 
         public async Task<CatalogPackage> GetPackageAsync()
         {
