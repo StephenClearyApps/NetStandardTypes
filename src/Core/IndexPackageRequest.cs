@@ -1,4 +1,4 @@
-﻿namespace Util
+﻿namespace NetStandardTypes.Core
 {
     public sealed class IndexPackageRequest
     {

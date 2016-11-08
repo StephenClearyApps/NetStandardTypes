@@ -9,13 +9,13 @@ using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Queue;
+using NetStandardTypes.Core;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using NuGetCatalog;
 using NuGetHelpers;
 using PackageIndexer.Logic;
-using Util;
 
 namespace CreateInfrastructure
 {
