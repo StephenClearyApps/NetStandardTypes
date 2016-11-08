@@ -141,6 +141,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Core.csproj">
+      <Project>{fb448c83-a1b0-48f4-8fd1-20acf6c3706c}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PackageIndexer.Logic\PackageIndexer.Logic.csproj">
       <Project>{8fe56eec-bcac-4aac-97f1-e9cd4fd5ae47}</Project>
       <Name>PackageIndexer.Logic</Name>

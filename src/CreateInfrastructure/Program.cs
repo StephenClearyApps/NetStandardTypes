@@ -42,7 +42,7 @@ namespace CreateInfrastructure
             await Task.WhenAll(CreateIndexAsync(),
                 CreateQueueAsync("refresh-catalog"),
                 CreateQueueAsync("process-package"));
-            PopulateTestPackages();
+            //PopulateTestPackages();
         }
 
         private static async Task CreateIndexAsync()

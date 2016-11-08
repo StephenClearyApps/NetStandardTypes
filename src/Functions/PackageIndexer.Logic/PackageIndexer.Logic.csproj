@@ -131,7 +131,6 @@
     <Compile Include="AzureSearchUtilities.cs" />
     <Compile Include="CecilExtensions.cs" />
     <Compile Include="EntryPoint.cs" />
-    <Compile Include="IndexPackageRequest.cs" />
     <Compile Include="NullAssemblyResolver.cs" />
     <Compile Include="PackageArchiveReaderWithRef.cs" />
     <Compile Include="PackageDocument.cs" />
@@ -145,13 +144,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Core.csproj">
+      <Project>{fb448c83-a1b0-48f4-8fd1-20acf6c3706c}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\NuGetHelpers\NuGetHelpers.csproj">
       <Project>{02f0b7be-3237-4761-8405-888be8eb617c}</Project>
       <Name>NuGetHelpers</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Util\Util.csproj">
-      <Project>{fb448c83-a1b0-48f4-8fd1-20acf6c3706c}</Project>
-      <Name>Util</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

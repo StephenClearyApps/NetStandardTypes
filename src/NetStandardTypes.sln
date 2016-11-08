@@ -32,7 +32,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetWalker.Logic", "NugetW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetWalker.LocalRunner", "NugetWalker.LocalRunner\NugetWalker.LocalRunner.csproj", "{DBCB4BE6-DDF0-471E-BBF3-B40892C36F47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util", "Util\Util.csproj", "{FB448C83-A1B0-48F4-8FD1-20ACF6C3706C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{FB448C83-A1B0-48F4-8FD1-20ACF6C3706C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
