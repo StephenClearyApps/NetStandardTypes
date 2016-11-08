@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage.Table;
 
@@ -62,7 +63,9 @@ namespace NetStandardTypes
             set { _entity.Timestamp = value; }
         }
 
-        protected string Get(string defaultValue, string propertyName)
+        protected string Get(string defaultValue = null, [CallerMemberName] string propertyName = null) => GetProperty(defaultValue, propertyName);
+
+        protected string GetProperty(string defaultValue, string propertyName)
         {
             EntityProperty result;
             if (_entity.Properties.TryGetValue(propertyName, out result))
@@ -70,7 +73,9 @@ namespace NetStandardTypes
             return defaultValue;
         }
 
-        protected void Set(string value, string propertyName)
+        protected void Set(string value, [CallerMemberName] string propertyName = null) => SetProperty(value, propertyName);
+
+        protected void SetProperty(string value, string propertyName)
         {
             _entity.Properties[propertyName] = EntityProperty.GeneratePropertyForString(value);
         }

@@ -82,20 +82,20 @@ namespace NetStandardTypes
 
             public string Version
             {
-                get { return Get(null, "v"); }
-                set { Set(value.ToLowerInvariant(), "v"); }
+                get { return Get(); }
+                set { Set(value.ToLowerInvariant()); }
             }
 
             public bool Processed
             {
-                get { return Get("0", "p") == "1"; }
-                set { Set(value ? "1" : "0", "p"); }
+                get { return Get("0") == "1"; }
+                set { Set(value ? "1" : "0"); }
             }
 
             public string CommitId
             {
-                get {  return Get(null, "c");}
-                set {  Set(value.ToLowerInvariant(), "c");}
+                get {  return Get();}
+                set {  Set(value.ToLowerInvariant());}
             }
         }
 
