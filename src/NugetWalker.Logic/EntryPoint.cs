@@ -29,8 +29,9 @@ namespace NetStandardTypes.NugetWalker
                 {
                     foreach (var pageEntry in pageEnumerator.Current.Entries())
                     {
-                        // Ensure the version is parseable.
-                        if (!IsVersionValid(pageEntry.Version))
+                        // Parse the version.
+                        NuGetVersion version;
+                        if (!NuGetVersion.TryParse(pageEntry.Version, out version))
                         {
                             log.WriteLine("Unable to parse version for " + pageEntry.Id + " " + pageEntry.Version);
                             continue;
@@ -38,15 +39,24 @@ namespace NetStandardTypes.NugetWalker
 
                         // Look up the existing entry, if any.
                         var existing = await table.TryGetVersionAsync(pageEntry.Id, pageEntry.Version);
-                        if (string.Equals(existing, pageEntry.Id, StringComparison.InvariantCultureIgnoreCase))
+
+                        // If the existing entry is this same one, then we're done.
+                        if (string.Equals(existing, pageEntry.Version, StringComparison.InvariantCultureIgnoreCase))
                         {
                             log.WriteLine("Reached bookmark " + pageEntry.Id + " " + pageEntry.Version);
                             return;
                         }
 
+                        // If the existing entry is newer than this one, then skip it.
+                        //  (This can only happen if NuGet packages are published out of order. Which does seem to happen!)
+                        if (existing != null && version < NuGetVersion.Parse(existing))
+                        {
+                            log.WriteLine("Ignoring " + pageEntry.Id + " " + pageEntry.Version + " because version " + existing + " is already listed.");
+                            continue;
+                        }
+
                         // Ensure the package supports netstandard.
                         var package = await pageEntry.GetPackageAsync();
-                        var id = package.Identity;
                         var frameworks = package.Metadata().GetSupportedFrameworksWithRef().ToArray();
                         if (!frameworks.Any(x => new FrameworkName(x.DotNetFrameworkName).IsNetStandard()))
                         {
@@ -64,12 +74,6 @@ namespace NetStandardTypes.NugetWalker
                     }
                 }
             }
-        }
-
-        private static bool IsVersionValid(string version)
-        {
-            NuGetVersion _;
-            return NuGetVersion.TryParse(version, out _);
         }
     }
 }

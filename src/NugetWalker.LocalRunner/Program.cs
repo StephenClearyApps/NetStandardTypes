@@ -14,7 +14,7 @@ namespace NetStandardTypes.NugetWalker.LocalRunner
         {
             try
             {
-                EntryPoint.Run(new RefreshCatalogRequest(), new QueueAsyncCollector<IndexPackageRequest>(Config.ProcessPackageQueueName), TextWriter.Null).GetAwaiter().GetResult();
+                EntryPoint.Run(new RefreshCatalogRequest(), new QueueAsyncCollector<IndexPackageRequest>(Config.ProcessPackageQueueName), Console.Out).GetAwaiter().GetResult();
                 Console.WriteLine("Done.");
             }
             catch (Exception ex)
