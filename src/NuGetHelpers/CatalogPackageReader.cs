@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using NuGet.Frameworks;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 
-namespace NuGetHelpers
+namespace NetStandardTypes.NuGetHelpers
 {
     // Copied from https://github.com/NuGet/NuGet.Services.Metadata/blob/d1d92417238924dc6b6d48d29d4dac4d8a48a9b9/src/NuGet.Indexing/Extraction/CatalogPackageReader.cs
     public class CatalogPackageReader

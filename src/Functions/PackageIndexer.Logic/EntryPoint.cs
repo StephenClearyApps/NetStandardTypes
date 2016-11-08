@@ -6,9 +6,9 @@ using System.Runtime.Versioning;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 using Mono.Cecil;
+using NetStandardTypes.NuGetHelpers;
 using Nito.Comparers;
 using NuGet;
-using NuGetHelpers;
 using Polly;
 
 namespace NetStandardTypes.PackageIndexer

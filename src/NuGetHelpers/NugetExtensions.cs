@@ -2,9 +2,8 @@
 using System.Linq;
 using System.Runtime.Versioning;
 using NuGet.Frameworks;
-using NuGet.Packaging;
 
-namespace NuGetHelpers
+namespace NetStandardTypes.NuGetHelpers
 {
     public static class NugetExtensions
     {

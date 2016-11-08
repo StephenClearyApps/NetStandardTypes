@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using NetStandardTypes.NuGetHelpers;
 using NuGet.Packaging;
-using NuGetHelpers;
 
 namespace NetStandardTypes.PackageIndexer
 {

@@ -7,7 +7,7 @@
     <ProjectGuid>{02F0B7BE-3237-4761-8405-888BE8EB617C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NuGetHelpers</RootNamespace>
+    <RootNamespace>NetStandardTypes.NuGetHelpers</RootNamespace>
     <AssemblyName>NuGetHelpers</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

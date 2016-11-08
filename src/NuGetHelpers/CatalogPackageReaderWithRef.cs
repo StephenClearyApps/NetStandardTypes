@@ -1,12 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 using NuGet.Packaging;
 
-namespace NuGetHelpers
+namespace NetStandardTypes.NuGetHelpers
 {
     public sealed class CatalogPackageReaderWithRef : CatalogPackageReader, IPackageContentReaderWithRef
     {

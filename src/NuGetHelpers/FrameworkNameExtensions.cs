@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Versioning;
 
-namespace NuGetHelpers
+namespace NetStandardTypes.NuGetHelpers
 {
     public static class FrameworkNameExtensions
     {

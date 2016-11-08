@@ -4,7 +4,7 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 using NuGet.Packaging;
 
-namespace NuGetHelpers
+namespace NetStandardTypes.NuGetHelpers
 {
     // Copied from https://github.com/NuGet/NuGet.Services.Metadata/blob/f21c218de5cc1d06bc47a7ae53632570329424c2/src/NuGet.Indexing/Extraction/CatalogNuspecReader.cs
     public class CatalogNuspecReader

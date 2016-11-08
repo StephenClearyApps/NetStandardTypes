@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using NuGet.Frameworks;
 using NuGet.Packaging;
-using NuGet.Packaging.Core;
-using NuGet.Versioning;
 
-namespace NuGetHelpers
+namespace NetStandardTypes.NuGetHelpers
 {
     public interface IPackageContentReaderWithRef : IPackageContentReader
     {
