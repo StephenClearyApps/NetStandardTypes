@@ -35,7 +35,7 @@ namespace NetStandardTypes.NugetWalker.LocalRunner
 
             public Task AddAsync(T item, CancellationToken cancellationToken = new CancellationToken())
             {
-                return _queue.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(item)), cancellationToken);
+                return _queue.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(item, Config.JsonSerializerSettings)), cancellationToken);
             }
         }
     }

@@ -5,6 +5,8 @@ using Microsoft.Azure.Search;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace NetStandardTypes
 {
@@ -27,5 +29,10 @@ namespace NetStandardTypes
         public static CloudTableClient CreateCloudTableClient() => CloudStorageAccount.CreateCloudTableClient();
         
         private static string GetSetting(string name) => CloudConfigurationManager.GetSetting(name) ?? Environment.GetEnvironmentVariable(name);
+
+        public static JsonSerializerSettings JsonSerializerSettings { get; } = new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
     }
 }
