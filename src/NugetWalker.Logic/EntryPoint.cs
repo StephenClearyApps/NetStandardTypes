@@ -1,14 +1,13 @@
-﻿using NuGetCatalog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
-using System.Text;
 using System.Threading.Tasks;
 using NuGet.Versioning;
+using NuGetCatalog;
 using NuGetHelpers;
 
-namespace NugetWalker.Logic
+namespace NetStandardTypes.NugetWalker
 {
     public static class EntryPoint
     {

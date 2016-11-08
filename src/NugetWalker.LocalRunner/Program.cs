@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NugetWalker.Logic;
 
-namespace NugetWalker.LocalRunner
+namespace NetStandardTypes.NugetWalker.LocalRunner
 {
     class Program
     {
