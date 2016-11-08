@@ -27,8 +27,8 @@ namespace NetStandardTypes.CreateInfrastructure
         private static async Task MainAsync()
         {
             await Task.WhenAll(CreateIndexAsync(),
-                CreateQueueAsync("refresh-catalog"),
-                CreateQueueAsync("process-package"));
+                CreateQueueAsync(Config.RefreshCatalogQueueName),
+                CreateQueueAsync(Config.ProcessPackageQueueName));
             //PopulateTestPackages();
         }
 

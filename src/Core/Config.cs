@@ -10,6 +10,9 @@ namespace NetStandardTypes
 {
     public static class Config
     {
+        public static string RefreshCatalogQueueName { get; } = "refresh-catalog";
+        public static string ProcessPackageQueueName { get; } = "process-package";
+
         private static string AzureSearchKey { get; } = GetSetting("NETSTANDARDTYPES_SEARCHKEY");
         private static string AzureStorageConnectionString { get; } = GetSetting("NETSTANDARDTYPES_STORAGECONNECTIONSTRING");
 
@@ -22,8 +25,7 @@ namespace NetStandardTypes
         public static SearchServiceClient CreateSearchServiceClient() => new SearchServiceClient(SearchUri, SearchCredentials, HttpClientHandler);
         public static CloudQueueClient CreateCloudQueueClient() => CloudStorageAccount.CreateCloudQueueClient();
         public static CloudTableClient CreateCloudTableClient() => CloudStorageAccount.CreateCloudTableClient();
-
-
+        
         private static string GetSetting(string name) => CloudConfigurationManager.GetSetting(name) ?? Environment.GetEnvironmentVariable(name);
     }
 }

@@ -76,7 +76,7 @@ namespace NetStandardTypes
             public string Version
             {
                 get { return Get(null, "v"); }
-                set { Set(value, "v"); }
+                set { Set(value.ToLowerInvariant(), "v"); }
             }
 
             public bool Processed
