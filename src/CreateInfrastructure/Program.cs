@@ -15,6 +15,7 @@ using NuGet.Versioning;
 using NuGetCatalog;
 using NuGetHelpers;
 using PackageIndexer.Logic;
+using Util;
 
 namespace CreateInfrastructure
 {
@@ -38,21 +39,21 @@ namespace CreateInfrastructure
 
         private static async Task MainAsync()
         {
-            await Task.WhenAll(//CreateIndexAsync(),
+            await Task.WhenAll(CreateIndexAsync(),
                 CreateQueueAsync("refresh-catalog"),
                 CreateQueueAsync("process-package"));
-            //PopulateTestPackages();
+            PopulateTestPackages();
         }
 
         private static async Task CreateIndexAsync()
         {
-            using (var serviceClient = new SearchServiceClient("netstandardtypes", new SearchCredentials(Config.AzureSearchKey)))
+            using (var serviceClient = Config.CreateSearchServiceClient())
                 await serviceClient.Indexes.CreateOrUpdateAsync(IndexDefinition());
         }
 
         private static async Task CreateQueueAsync(string queueName)
         {
-            var client = new CloudQueueClient(new Uri("https://netstandardtypes.queue.core.windows.net/"), new StorageCredentials("netstandardtypes", Config.AzureStorageKey));
+            var client = Config.CreateCloudQueueClient();
             var queue = client.GetQueueReference(queueName);
             await queue.CreateIfNotExistsAsync();
         }

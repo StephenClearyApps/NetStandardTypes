@@ -184,7 +184,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -204,6 +203,10 @@
     <ProjectReference Include="..\NuGetHelpers\NuGetHelpers.csproj">
       <Project>{02f0b7be-3237-4761-8405-888be8eb617c}</Project>
       <Name>NuGetHelpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Util\Util.csproj">
+      <Project>{fb448c83-a1b0-48f4-8fd1-20acf6c3706c}</Project>
+      <Name>Util</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

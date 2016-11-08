@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetWalker.Logic", "NugetW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetWalker.LocalRunner", "NugetWalker.LocalRunner\NugetWalker.LocalRunner.csproj", "{DBCB4BE6-DDF0-471E-BBF3-B40892C36F47}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util", "Util\Util.csproj", "{FB448C83-A1B0-48F4-8FD1-20ACF6C3706C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{DBCB4BE6-DDF0-471E-BBF3-B40892C36F47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBCB4BE6-DDF0-471E-BBF3-B40892C36F47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBCB4BE6-DDF0-471E-BBF3-B40892C36F47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB448C83-A1B0-48F4-8FD1-20ACF6C3706C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB448C83-A1B0-48F4-8FD1-20ACF6C3706C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB448C83-A1B0-48F4-8FD1-20ACF6C3706C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB448C83-A1B0-48F4-8FD1-20ACF6C3706C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,6 +13,7 @@ using NuGet;
 using NuGet.Frameworks;
 using NuGetHelpers;
 using Polly;
+using Util;
 
 namespace PackageIndexer.Logic
 {
@@ -23,7 +24,7 @@ namespace PackageIndexer.Logic
         {
             log.WriteLine("Starting: " + request.PackageId + " " + request.PackageVersion);
 
-            var client = new SearchServiceClient("netstandardtypes", new SearchCredentials(Config.AzureSearchKey));
+            var client = Config.CreateSearchServiceClient();
 
             // TODO: polly
             try
