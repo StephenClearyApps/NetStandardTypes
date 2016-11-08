@@ -33,7 +33,7 @@ namespace NetStandardTypes.NugetWalker
                         NuGetVersion version;
                         if (!NuGetVersion.TryParse(pageEntry.Version, out version))
                         {
-                            log.WriteLine("Unable to parse version for " + pageEntry.Id + " " + pageEntry.Version);
+                            log.WriteLine("Unable to parse version: " + pageEntry.Id + " " + pageEntry.Version);
                             continue;
                         }
 
@@ -43,7 +43,7 @@ namespace NetStandardTypes.NugetWalker
                         // If the existing entry is this same one, then we're done.
                         if (string.Equals(existing, pageEntry.Version, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            log.WriteLine("Reached bookmark " + pageEntry.Id + " " + pageEntry.Version);
+                            log.WriteLine("Reached bookmark: " + pageEntry.Id + " " + pageEntry.Version);
                             return;
                         }
 
@@ -51,7 +51,7 @@ namespace NetStandardTypes.NugetWalker
                         //  (This can only happen if NuGet packages are published out of order. Which does seem to happen!)
                         if (existing != null && version < NuGetVersion.Parse(existing))
                         {
-                            log.WriteLine("Ignoring " + pageEntry.Id + " " + pageEntry.Version + " because version " + existing + " is already listed.");
+                            log.WriteLine("Ignoring due to existing version " + existing + ": " + pageEntry.Id + " " + pageEntry.Version);
                             continue;
                         }
 
@@ -60,7 +60,7 @@ namespace NetStandardTypes.NugetWalker
                         var frameworks = package.Metadata().GetSupportedFrameworksWithRef().ToArray();
                         if (!frameworks.Any(x => new FrameworkName(x.DotNetFrameworkName).IsNetStandard()))
                         {
-                            log.WriteLine("Ignoring " + pageEntry.Id + " " + pageEntry.Version + " because it does not support netstandard.");
+                            log.WriteLine("Ignoring due to platform: " + pageEntry.Id + " " + pageEntry.Version);
                             continue;
                         }
 
