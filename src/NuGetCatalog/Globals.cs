@@ -18,7 +18,7 @@ namespace NuGetCatalog
 
         internal static async Task<JObject> GetJsonAsync(this HttpClient client, string url)
         {
-            Trace.WriteLine("GET " + url);
+            Console.WriteLine("GET " + url);
             var json = await Policy.Handle<Exception>()
                 .WaitAndRetryAsync(20, count => TimeSpan.FromSeconds(count))
                 .ExecuteAsync(() => client.GetStringAsync(url)).ConfigureAwait(false);

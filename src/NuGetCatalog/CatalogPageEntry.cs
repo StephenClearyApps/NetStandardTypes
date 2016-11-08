@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuGetHelpers;
 using static NuGetCatalog.Globals;
 
 namespace NuGetCatalog
@@ -22,6 +23,7 @@ namespace NuGetCatalog
 
         public string Id => (string) _content["nuget:id"];
         public string Version => (string)_content["nuget:version"];
+        public DateTimeOffset? CommitTimestamp => _content.GetDateTimeOffset("commitTimestamp");
 
         public async Task<CatalogPackage> GetPackageAsync()
         {

@@ -17,11 +17,11 @@ namespace NuGetCatalog
 
         public IEnumerable<CatalogPageEntry> Entries()
         {
+            // Create the initial list of entries.
             var packages = (JArray)_content.items;
             if (packages == null)
                 throw UnrecognizedJson();
-            for (int i = packages.Count - 1; i >= 0; --i)
-                yield return new CatalogPageEntry(_content.items[i]);
+            return packages.Select(x => new CatalogPageEntry(x));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using NetStandardTypes.NuGetHelpers;
+using Nito.Comparers;
 using NuGet.Versioning;
 using NuGetCatalog;
 using NuGetHelpers;
@@ -27,7 +29,7 @@ namespace NetStandardTypes.NugetWalker
             {
                 while (await pageEnumerator.MoveNext())
                 {
-                    foreach (var pageEntry in pageEnumerator.Current.Entries())
+                    foreach (var pageEntry in Fixup(pageEnumerator.Current.Entries()))
                     {
                         // Parse the version.
                         NuGetVersion version;
@@ -65,6 +67,7 @@ namespace NetStandardTypes.NugetWalker
                         }
 
                         // Add a process request.
+                        log.WriteLine("Will process: " + pageEntry.Id + " " + pageEntry.Version);
                         await processPackageQueue.AddAsync(new IndexPackageRequest
                         {
                             PackageId = pageEntry.Id,
@@ -77,6 +80,15 @@ namespace NetStandardTypes.NugetWalker
                     }
                 }
             }
+        }
+
+        private static IEnumerable<CatalogPageEntry> Fixup(IEnumerable<CatalogPageEntry> entries)
+        {
+            // The json files are often out-of-order and not even unique across (id, version). So this function puts at least this page's entries in an appropriate order.
+            // TODO: Require 'commitId' for bookmarks!
+            return entries
+                .Distinct(EqualityComparerBuilder.For<CatalogPageEntry>().EquateBy(x => x.Id.ToLowerInvariant() + "@" + (NuGetVersion.Parse(x.Version).IsPrerelease ? "1" : "0")))
+                .OrderByDescending(x => x.Version).ThenByDescending(x => x.CommitTimestamp);
         }
     }
 }

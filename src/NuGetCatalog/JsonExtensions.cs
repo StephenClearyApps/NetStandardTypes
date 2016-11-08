@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 namespace NuGetHelpers
 {
-    internal static class JTokenExtensions
+    public static class JTokenExtensions
     {
         public static DateTimeOffset? GetDateTimeOffset(this JToken token, string key)
         {

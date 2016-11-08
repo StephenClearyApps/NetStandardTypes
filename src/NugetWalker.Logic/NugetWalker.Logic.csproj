@@ -38,6 +38,10 @@
       <HintPath>..\packages\Microsoft.Win32.Primitives.4.0.1\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Nito.Comparers, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.Comparers.1.0.0-eta-01\lib\portable45-net45+win8+wp8+wpa81\Nito.Comparers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NuGet.Common, Version=3.4.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\NuGet.Common.3.4.4-rtm-final\lib\net45\NuGet.Common.dll</HintPath>
       <Private>True</Private>
