@@ -16,11 +16,8 @@ namespace NetStandardTypes.NugetWalker
 {
     public static class EntryPoint
     {
-        private static readonly Task _initialize = PackageTable.InitializeAsync();
-
-        public static async Task Run(RefreshCatalogRequest request, IAsyncCollector<IndexPackageRequest> processPackageQueue, TextWriter log)
+        public static async Task Run(TimerInfo myTimer, IAsyncCollector<IndexPackageRequest> processPackageQueue, TextWriter log)
         {
-            await _initialize;
             var table = new PackageTable();
 
             var index = await ServiceIndex.CreateAsync();

@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Timers;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 
@@ -14,7 +15,7 @@ namespace NetStandardTypes.NugetWalker.LocalRunner
         {
             try
             {
-                EntryPoint.Run(new RefreshCatalogRequest(), new QueueAsyncCollector<IndexPackageRequest>(Config.ProcessPackageQueueName), Console.Out).GetAwaiter().GetResult();
+                EntryPoint.Run(new TimerInfo(new DailySchedule()), new QueueAsyncCollector<IndexPackageRequest>(Config.ProcessPackageQueueName), Console.Out).GetAwaiter().GetResult();
                 Console.WriteLine("Done.");
             }
             catch (Exception ex)

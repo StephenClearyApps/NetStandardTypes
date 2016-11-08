@@ -12,8 +12,8 @@ namespace NetStandardTypes
 {
     public static class Config
     {
-        public static string RefreshCatalogQueueName { get; } = "refresh-catalog";
         public static string ProcessPackageQueueName { get; } = "process-package";
+        public static string PackageTableName { get; } = "package";
 
         private static string AzureSearchKey { get; } = GetSetting("NETSTANDARDTYPES_SEARCHKEY");
         private static string AzureStorageConnectionString { get; } = GetSetting("NETSTANDARDTYPES_STORAGECONNECTIONSTRING");

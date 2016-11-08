@@ -14,7 +14,7 @@ namespace NetStandardTypes
 
         private static CloudTable GetTable()
         {
-            return Config.CreateCloudTableClient().GetTableReference("package");
+            return Config.CreateCloudTableClient().GetTableReference(Config.PackageTableName);
         }
 
         public static Task InitializeAsync() => GetTable().CreateIfNotExistsAsync();
