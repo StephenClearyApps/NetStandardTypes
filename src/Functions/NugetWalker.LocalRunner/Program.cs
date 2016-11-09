@@ -15,7 +15,7 @@ namespace NetStandardTypes.NugetWalker.LocalRunner
         {
             try
             {
-                EntryPoint.Run(new TimerInfo(new DailySchedule()), new QueueAsyncCollector<IndexPackageRequest>(Config.ProcessPackageQueueName), Console.Out).GetAwaiter().GetResult();
+                EntryPoint.Run(new TimerInfo(new DailySchedule(), new ScheduleStatus()), new QueueAsyncCollector<IndexPackageRequest>(Config.ProcessPackageQueueName), Console.Out).GetAwaiter().GetResult();
                 Console.WriteLine("Done.");
             }
             catch (Exception ex)
@@ -37,6 +37,11 @@ namespace NetStandardTypes.NugetWalker.LocalRunner
             public Task AddAsync(T item, CancellationToken cancellationToken = new CancellationToken())
             {
                 return _queue.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(item, Config.JsonSerializerSettings)), cancellationToken);
+            }
+
+            public Task FlushAsync(CancellationToken cancellationToken = default(CancellationToken))
+            {
+                return Task.CompletedTask;
             }
         }
     }
