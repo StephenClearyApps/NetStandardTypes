@@ -27,6 +27,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGetHelpers", "NuGetHelpers\NuGetHelpers.csproj", "{02F0B7BE-3237-4761-8405-888BE8EB617C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NugetWalker", "NugetWalker", "{CB6DD39B-2B0E-401D-9003-368BAB93E5F8}"
+	ProjectSection(SolutionItems) = preProject
+		Functions\NugetWalker\project.json = Functions\NugetWalker\project.json
+		Functions\NugetWalker\Run.csx = Functions\NugetWalker\Run.csx
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetWalker.Logic", "NugetWalker.Logic\NugetWalker.Logic.csproj", "{787B6730-FC01-4E61-8677-92095A5FF703}"
 EndProject

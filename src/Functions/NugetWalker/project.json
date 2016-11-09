@@ -1,0 +1,22 @@
+{
+  "frameworks": {
+    "net46": {
+    }
+  },
+  "bindings": [
+    {
+      "name": "myTimer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "0 30 * * * *"
+    },
+    {
+      "type": "queue",
+      "name": "processPackageQueue",
+      "queueName": "process-package",
+      "connection": "AzureWebJobsStorage",
+      "direction": "out"
+    }
+  ],
+  "disabled": false
+}
