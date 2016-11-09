@@ -82,7 +82,6 @@ namespace NetStandardTypes.NugetWalker
         private static IEnumerable<CatalogPageEntry> Fixup(IEnumerable<CatalogPageEntry> entries)
         {
             // The json files are often out-of-order and not even unique across (id, version). So this function puts at least this page's entries in an appropriate order.
-            // TODO: Require 'commitId' for bookmarks!
             return entries
                 .Distinct(EqualityComparerBuilder.For<CatalogPageEntry>().EquateBy(x => x.Id.ToLowerInvariant() + "@" + (NuGetVersion.Parse(x.Version).IsPrerelease ? "1" : "0")))
                 .OrderByDescending(x => x.Version).ThenByDescending(x => x.CommitTimestamp);
