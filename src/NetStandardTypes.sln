@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateInfrastructure", "Cre
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PackageIndexer", "PackageIndexer", "{36383BE3-552B-4C82-8AFD-5ED9BFE798A9}"
 	ProjectSection(SolutionItems) = preProject
-		Functions\PackageIndexer\project.json = Functions\PackageIndexer\project.json
+		Functions\PackageIndexer\function.json = Functions\PackageIndexer\function.json
 		Functions\PackageIndexer\Run.csx = Functions\PackageIndexer\Run.csx
 	EndProjectSection
 EndProject
@@ -26,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGetHelpers", "NuGetHelper
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NugetWalker", "NugetWalker", "{CB6DD39B-2B0E-401D-9003-368BAB93E5F8}"
 	ProjectSection(SolutionItems) = preProject
-		Functions\NugetWalker\project.json = Functions\NugetWalker\project.json
+		Functions\NugetWalker\function.json = Functions\NugetWalker\function.json
 		Functions\NugetWalker\Run.csx = Functions\NugetWalker\Run.csx
 	EndProjectSection
 EndProject

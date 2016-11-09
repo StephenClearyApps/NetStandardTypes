@@ -1,8 +1,4 @@
 {
-  "frameworks": {
-    "net46": {
-    }
-  },
   "bindings": [
     {
       "name": "myTimer",
