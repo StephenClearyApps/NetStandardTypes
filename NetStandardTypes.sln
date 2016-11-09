@@ -11,7 +11,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NugetWalker", "NugetWalker", "{33C7CA42-776A-4D3F-BE8A-5889318CBD55}"
 	ProjectSection(SolutionItems) = preProject
 		NugetWalker\function.json = NugetWalker\function.json
-		project.json = project.json
+		NugetWalker\project.json = NugetWalker\project.json
 		NugetWalker\Run.csx = NugetWalker\Run.csx
 	EndProjectSection
 EndProject
