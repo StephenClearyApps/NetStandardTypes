@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using NetStandardTypes;
 
-public static void ProcessQueueMessage(TimerInfo myTimer, IAsyncCollector<IndexPackageRequest> processPackageQueue, TextWriter log)
+public static void Run(TimerInfo myTimer, IAsyncCollector<IndexPackageRequest> processPackageQueue, TextWriter log)
 {
     log.WriteLine(myTimer);
 }
