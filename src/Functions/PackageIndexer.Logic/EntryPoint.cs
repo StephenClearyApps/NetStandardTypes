@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
+using System.Threading.Tasks;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 using Mono.Cecil;
@@ -15,29 +16,20 @@ namespace NetStandardTypes.PackageIndexer
 {
     public static class EntryPoint
     {
-
-        public static void Run(IndexPackageRequest request, TextWriter log)
+        public static async Task Run(IndexPackageRequest request, TextWriter log)
         {
             log.WriteLine("Starting: " + request.PackageId + " " + request.PackageVersion);
 
-            var client = Config.CreateSearchServiceClient();
+            var client = Config.CreateSearchServiceClient().Indexes.GetClient(Config.IndexName);
+            var documents = GenerateDocuments(request, log).ToList();
+            var batch = IndexBatch.Upload(documents);
 
-            // TODO: polly
-            try
-            {
-                var documents = GenerateDocuments(request, log).ToArray();
-                var batch = IndexBatch.Upload(documents);
-                client.Indexes.GetClient("types").Documents.Index(batch);
-            }
-            catch (IndexBatchException e)
-            {
-                // Sometimes when your Search service is under load, indexing will fail for some of the documents in
-                // the batch. Depending on your application, you can take compensating actions like delaying and
-                // retrying.
-
-                // e.IndexingResults.Where(r => !r.Succeeded)
-                throw;
-            }
+            await Policy.Handle<IndexBatchException>()
+                .RetryAsync((ex, context) =>
+                {
+                    batch = ((IndexBatchException) ex).FindFailedActionsToRetry(batch, x => x.Id);
+                })
+                .ExecuteAsync(() => client.Documents.IndexAsync(batch));
         }
 
         private static IEnumerable<PackageDocument> GenerateDocuments(IndexPackageRequest request, TextWriter log)

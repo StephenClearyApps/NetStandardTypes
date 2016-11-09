@@ -14,6 +14,7 @@ namespace NetStandardTypes
     {
         public static string ProcessPackageQueueName { get; } = "process-package";
         public static string PackageTableName { get; } = "package";
+        public static string IndexName { get; } = "types";
 
         private static string AzureSearchKey { get; } = GetSetting("NETSTANDARDTYPES_SEARCHKEY");
         private static string AzureStorageConnectionString { get; } = GetSetting("NETSTANDARDTYPES_STORAGECONNECTIONSTRING");

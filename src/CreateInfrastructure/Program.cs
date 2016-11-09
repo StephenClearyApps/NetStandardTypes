@@ -45,57 +45,57 @@ namespace NetStandardTypes.CreateInfrastructure
             await queue.CreateIfNotExistsAsync();
         }
 
-        private static void PopulateTestPackages()
+        private static async Task PopulateTestPackagesAsync()
         {
-            EntryPoint.Run(new IndexPackageRequest()
+            await EntryPoint.Run(new IndexPackageRequest()
             {
                 PackageId = "Nito.Collections.Deque",
                 PackageVersion = "1.0.0",
             }, Console.Out);
 
-            EntryPoint.Run(new IndexPackageRequest()
+            await EntryPoint.Run(new IndexPackageRequest()
             {
                 PackageId = "Nito.AsyncEx.Coordination",
                 PackageVersion = "1.0.2",
             }, Console.Out);
 
-            EntryPoint.Run(new IndexPackageRequest()
+            await EntryPoint.Run(new IndexPackageRequest()
             {
                 PackageId = "System.Threading.Tasks",
                 PackageVersion = "4.0.11",
             }, Console.Out);
 
-            EntryPoint.Run(new IndexPackageRequest()
+            await EntryPoint.Run(new IndexPackageRequest()
             {
                 PackageId = "System.Collections",
                 PackageVersion = "4.0.11",
             }, Console.Out);
 
-            EntryPoint.Run(new IndexPackageRequest()
+            await EntryPoint.Run(new IndexPackageRequest()
             {
                 PackageId = "System.IO",
                 PackageVersion = "4.1.0",
             }, Console.Out);
 
-            EntryPoint.Run(new IndexPackageRequest()
+            await EntryPoint.Run(new IndexPackageRequest()
             {
                 PackageId = "System.Runtime",
                 PackageVersion = "4.1.0",
             }, Console.Out);
 
-            EntryPoint.Run(new IndexPackageRequest()
+            await EntryPoint.Run(new IndexPackageRequest()
             {
                 PackageId = "System.Xml.XDocument",
                 PackageVersion = "4.0.11",
             }, Console.Out);
 
-            EntryPoint.Run(new IndexPackageRequest()
+            await EntryPoint.Run(new IndexPackageRequest()
             {
                 PackageId = "Newtonsoft.Json",
                 PackageVersion = "9.0.1",
             }, Console.Out);
 
-            EntryPoint.Run(new IndexPackageRequest()
+            await EntryPoint.Run(new IndexPackageRequest()
             {
                 PackageId = "System.Reactive.Core",
                 PackageVersion = "3.0.0",
