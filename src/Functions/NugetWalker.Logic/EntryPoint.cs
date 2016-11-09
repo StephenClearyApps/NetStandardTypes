@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,7 +9,6 @@ using NetStandardTypes.NuGetHelpers;
 using Nito.Comparers;
 using NuGet.Versioning;
 using NuGetCatalog;
-using NuGetHelpers;
 
 namespace NetStandardTypes.NugetWalker
 {
