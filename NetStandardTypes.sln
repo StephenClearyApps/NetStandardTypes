@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{71412010-1EB9-4947-A03E-A03422D4D474}"
+	ProjectSection(SolutionItems) = preProject
+		host.json = host.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NugetWalker", "NugetWalker", "{33C7CA42-776A-4D3F-BE8A-5889318CBD55}"
+	ProjectSection(SolutionItems) = preProject
+		NugetWalker\project.json = NugetWalker\project.json
+		NugetWalker\Run.csx = NugetWalker\Run.csx
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{33C7CA42-776A-4D3F-BE8A-5889318CBD55} = {71412010-1EB9-4947-A03E-A03422D4D474}
+	EndGlobalSection
+EndGlobal
