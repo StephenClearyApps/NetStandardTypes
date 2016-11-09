@@ -198,15 +198,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj">
+    <ProjectReference Include="..\..\Core\Core.csproj">
       <Project>{FB448C83-A1B0-48F4-8FD1-20ACF6C3706C}</Project>
       <Name>Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NuGetCatalog\NuGetCatalog.csproj">
+    <ProjectReference Include="..\..\NuGetCatalog\NuGetCatalog.csproj">
       <Project>{58fd8d8a-dc0e-478c-a8c3-710ab7b1180e}</Project>
       <Name>NuGetCatalog</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NuGetHelpers\NuGetHelpers.csproj">
+    <ProjectReference Include="..\..\NuGetHelpers\NuGetHelpers.csproj">
       <Project>{02f0b7be-3237-4761-8405-888be8eb617c}</Project>
       <Name>NuGetHelpers</Name>
     </ProjectReference>

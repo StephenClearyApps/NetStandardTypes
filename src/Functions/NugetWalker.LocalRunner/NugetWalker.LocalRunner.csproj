@@ -126,7 +126,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj">
+    <ProjectReference Include="..\..\Core\Core.csproj">
       <Project>{FB448C83-A1B0-48F4-8FD1-20ACF6C3706C}</Project>
       <Name>Core</Name>
     </ProjectReference>
