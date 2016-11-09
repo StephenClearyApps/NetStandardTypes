@@ -1,4 +1,5 @@
-﻿#r "NugetWalker.Logic"
+﻿#r ".\bin\NugetWalker.Logic.dll"
+#r ".\bin\Core.dll"
 
 using System;
 using System.Collections.Generic;
@@ -8,8 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using NetStandardTypes;
+using NetStandardTypes.NugetWalker;
 
-public static void Run(TimerInfo myTimer, IAsyncCollector<IndexPackageRequest> processPackageQueue, TextWriter log)
+public static Task Run(TimerInfo myTimer, IAsyncCollector<IndexPackageRequest> processPackageQueue, TextWriter log)
 {
-    log.WriteLine(myTimer);
+    return EntryPoint.Run(myTimer, processPackageQueue, log);
 }
