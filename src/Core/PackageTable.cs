@@ -31,11 +31,11 @@ namespace NetStandardTypes
             };
         }
 
-        public Task SetVersionAsync(string id, string version, string commitId)
+        public Task SetVersionAsync(string id, NuGetVersion version, string commitId)
         {
             var entity = new Entity(_table, id, version)
             {
-                Version = version,
+                Version = version.ToString(),
                 CommitId = commitId,
                 Processed = false,
             };
@@ -58,7 +58,7 @@ namespace NetStandardTypes
             {
             }
 
-            private Entity(CloudTable table, string id, NuGetVersion version)
+            public Entity(CloudTable table, string id, NuGetVersion version)
                 : base(table, ToPartitionKey(id), ToRowKey(version.IsPrerelease))
             {
             }

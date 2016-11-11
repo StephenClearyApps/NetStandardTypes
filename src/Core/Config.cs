@@ -3,6 +3,7 @@ using System.Net.Http;
 using Microsoft.Azure;
 using Microsoft.Azure.Search;
 using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
@@ -28,6 +29,7 @@ namespace NetStandardTypes
         public static SearchServiceClient CreateSearchServiceClient() => new SearchServiceClient(SearchUri, SearchCredentials, HttpClientHandler);
         public static CloudQueueClient CreateCloudQueueClient() => CloudStorageAccount.CreateCloudQueueClient();
         public static CloudTableClient CreateCloudTableClient() => CloudStorageAccount.CreateCloudTableClient();
+        public static CloudBlobClient CreateCloudBlobClient() => CloudStorageAccount.CreateCloudBlobClient();
         
         private static string GetSetting(string name) => CloudConfigurationManager.GetSetting(name) ?? Environment.GetEnvironmentVariable(name);
 

@@ -95,6 +95,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AzureLock.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="IndexPackageRequest.cs" />
     <Compile Include="PackageTable.cs" />

@@ -21,7 +21,8 @@ namespace NuGetCatalog
             var packages = (JArray)_content.items;
             if (packages == null)
                 throw UnrecognizedJson();
-            return packages.Select(x => new CatalogPageEntry(x));
+            for (int i = packages.Count - 1; i >= 0; --i)
+                yield return new CatalogPageEntry(_content.items[i]);
         }
     }
 }
