@@ -45,7 +45,7 @@ namespace NetStandardTypes.NugetWalker
                         var resultExisting = result.FirstOrDefault(x => string.Equals(x.LowercasePackageId, pageEntry.Id, StringComparison.InvariantCultureIgnoreCase));
                         if (resultExisting != null && version <= resultExisting.PackageVersion)
                         {
-                            log.WriteLine("Ignoring due to existing in-memory version " + resultExisting.PackageVersion + ": " + pageEntry.Id + " " + pageEntry.Version);
+                            log.WriteLine("Already going to process " + resultExisting.PackageVersion + ": " + pageEntry.Id + " " + pageEntry.Version);
                             continue;
                         }
 
