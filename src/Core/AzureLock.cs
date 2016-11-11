@@ -12,16 +12,19 @@ namespace NetStandardTypes
     // TODO: For now, this is an infinite lease.
     public sealed class AzureLock
     {
-        private readonly CloudBlob _blob;
+        private readonly CloudBlockBlob _blob;
 
-        public AzureLock(CloudBlob blob)
+        public AzureLock(CloudBlockBlob blob)
         {
             _blob = blob;
         }
 
         public async Task<IDisposable> LockAsync()
         {
-            return new Key(_blob, await _blob.AcquireLeaseAsync(Timeout.InfiniteTimeSpan));
+            await _blob.Container.CreateIfNotExistsAsync();
+            if (!await _blob.ExistsAsync())
+                await _blob.UploadTextAsync("l");
+            return new Key(_blob, await _blob.AcquireLeaseAsync(null));
         }
 
         private sealed class Key : IDisposable

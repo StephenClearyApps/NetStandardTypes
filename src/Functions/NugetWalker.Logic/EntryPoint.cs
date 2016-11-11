@@ -93,10 +93,7 @@ namespace NetStandardTypes.NugetWalker
         public static async Task Run(TimerInfo myTimer, IAsyncCollector<IndexPackageRequest> processPackageQueue, TextWriter log)
         {
             var table = new PackageTable();
-            var client = Config.CreateCloudBlobClient();
-            var container = client.GetContainerReference("locks");
-            await container.CreateIfNotExistsAsync();
-            var mutex = new AzureLock(container.GetBlockBlobReference("nugetwalker"));
+            var mutex = new AzureLock(Config.CreateCloudBlobClient().GetContainerReference("locks").GetBlockBlobReference("nugetwalker"));
             using (await mutex.LockAsync())
             {
                 // Parse the entire catalog, until the bookmark.
