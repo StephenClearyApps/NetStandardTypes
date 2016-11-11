@@ -23,6 +23,7 @@ namespace NetStandardTypes.NugetWalker
 
         private static async Task<List<PackageEntry>> InspectCatalogAsync(PackageTable table, TextWriter log)
         {
+            var ignoredDueToPlatform = new List<PackageEntry>();
             var result = new List<PackageEntry>();
             var index = await ServiceIndex.CreateAsync();
             var catalog = await index.GetCatalogAsync();
@@ -40,10 +41,26 @@ namespace NetStandardTypes.NugetWalker
                             continue;
                         }
 
+                        // Check to see if we have a newer in-memory entry already processed for this id.
+                        var resultExisting = result.FirstOrDefault(x => string.Equals(x.LowercasePackageId, pageEntry.Id, StringComparison.InvariantCultureIgnoreCase));
+                        if (resultExisting != null && version <= resultExisting.PackageVersion)
+                        {
+                            log.WriteLine("Ignoring due to existing in-memory version " + resultExisting.PackageVersion + ": " + pageEntry.Id + " " + pageEntry.Version);
+                            continue;
+                        }
+
+                        // Check to see if we have a newer in-memory ignored entry already processed for this id.
+                        var ignoredExisting = ignoredDueToPlatform.FirstOrDefault(x => string.Equals(x.LowercasePackageId, pageEntry.Id, StringComparison.InvariantCultureIgnoreCase));
+                        if (ignoredExisting != null && version <= ignoredExisting.PackageVersion)
+                        {
+                            log.WriteLine("Already ignored due to platform: " + pageEntry.Id + " " + pageEntry.Version);
+                            continue;
+                        }
+
                         // Look up the existing table entry, if any.
                         var existing = await table.TryGetVersionCommitAsync(pageEntry.Id, pageEntry.Version);
                         
-                        // TODO: Change to a global bookmark and pass it to the catalog enumerator. This allows json files to be prepended or appended to.
+                        // TODO: Change to a global bookmark and pass it to the catalog enumerator. This allows json files to be prepended *or* appended to.
                         // If the existing table entry is this same exact commit, then we're done.
                         if (existing != null && string.Equals(existing.CommitId, pageEntry.CommitId, StringComparison.InvariantCultureIgnoreCase))
                         {
@@ -59,20 +76,24 @@ namespace NetStandardTypes.NugetWalker
                             continue;
                         }
 
-                        // Check to see if we have a newer in-memory entry already processed for this id.
-                        var resultExisting = result.FirstOrDefault(x => string.Equals(x.LowercasePackageId, pageEntry.Id, StringComparison.InvariantCultureIgnoreCase));
-                        if (resultExisting != null && version <= resultExisting.PackageVersion)
-                        {
-                            log.WriteLine("Ignoring due to existing in-memory version " + resultExisting.PackageVersion + ": " + pageEntry.Id + " " + pageEntry.Version);
-                            continue;
-                        }
-
                         // Ensure the package supports netstandard.
                         var package = await pageEntry.GetPackageAsync();
                         var frameworks = package.Metadata().GetSupportedFrameworksWithRef().ToArray();
                         if (!frameworks.Any(x => new FrameworkName(x.DotNetFrameworkName).IsNetStandard()))
                         {
                             log.WriteLine("Ignoring due to platform: " + pageEntry.Id + " " + pageEntry.Version);
+                            if (ignoredExisting != null)
+                            {
+                                ignoredExisting.PackageVersion = version;
+                            }
+                            else
+                            {
+                                ignoredDueToPlatform.Add(new PackageEntry
+                                {
+                                    LowercasePackageId = pageEntry.Id.ToLowerInvariant(),
+                                    PackageVersion = version,
+                                });
+                            }
                             continue;
                         }
 
