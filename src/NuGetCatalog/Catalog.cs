@@ -31,6 +31,7 @@ namespace NuGetCatalog
                 var url = (string)pages[i]["@id"];
                 if (url == null)
                     throw UnrecognizedJson();
+                Console.WriteLine("Next page: " + url);
                 return new CatalogPage(await Client.GetJsonAsync(url));
             });
         }

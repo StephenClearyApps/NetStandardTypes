@@ -14,16 +14,34 @@ namespace NetStandardTypes.NugetWalker
 {
     public static class EntryPoint
     {
-        private sealed class PackageEntry
+        private class PackageEntryBase
         {
-            public string CommitId { get; set; }
-            public string LowercasePackageId { get; set; }
+            public PackageEntryBase(string lowercasePackageId, NuGetVersion packageVersion)
+            {
+                PackageVersion = packageVersion;
+                Key = lowercasePackageId + "@" + (packageVersion.IsPrerelease ? "1" : "0");
+            }
+
+            public string Key { get; private set; }
             public NuGetVersion PackageVersion { get; set; }
+        }
+
+        private sealed class PackageEntry : PackageEntryBase
+        {
+            public PackageEntry(string commitId, string lowercasePackageId, NuGetVersion packageVersion)
+                : base(lowercasePackageId, packageVersion)
+            {
+                CommitId = commitId;
+                LowercasePackageId = lowercasePackageId;
+            }
+
+            public string CommitId { get; private set; }
+            public string LowercasePackageId { get; private set; }
         }
 
         private static async Task<List<PackageEntry>> InspectCatalogAsync(PackageTable table, TextWriter log)
         {
-            var ignoredDueToPlatform = new List<PackageEntry>();
+            var ignoredDueToPlatform = new List<PackageEntryBase>();
             var result = new List<PackageEntry>();
             var index = await ServiceIndex.CreateAsync();
             var catalog = await index.GetCatalogAsync();
@@ -41,16 +59,20 @@ namespace NetStandardTypes.NugetWalker
                             continue;
                         }
 
-                        // Check to see if we have a newer in-memory entry already processed for this id.
-                        var resultExisting = result.FirstOrDefault(x => string.Equals(x.LowercasePackageId, pageEntry.Id, StringComparison.InvariantCultureIgnoreCase));
+                        // Generate the key (id + prerelease flag).
+                        var lowercasePackageId = pageEntry.Id.ToLowerInvariant();
+                        var key = lowercasePackageId + (version.IsPrerelease ? "1" : "0");
+
+                        // Check to see if we have a newer in-memory entry already processed for this key.
+                        var resultExisting = result.FirstOrDefault(x => x.Key == key);
                         if (resultExisting != null && version <= resultExisting.PackageVersion)
                         {
                             log.WriteLine("Already going to process " + resultExisting.PackageVersion + ": " + pageEntry.Id + " " + pageEntry.Version);
                             continue;
                         }
 
-                        // Check to see if we have a newer in-memory ignored entry already processed for this id.
-                        var ignoredExisting = ignoredDueToPlatform.FirstOrDefault(x => string.Equals(x.LowercasePackageId, pageEntry.Id, StringComparison.InvariantCultureIgnoreCase));
+                        // Check to see if we have a newer in-memory ignored entry already processed for this key.
+                        var ignoredExisting = ignoredDueToPlatform.FirstOrDefault(x => x.Key == key);
                         if (ignoredExisting != null && version <= ignoredExisting.PackageVersion)
                         {
                             log.WriteLine("Already ignored due to platform: " + pageEntry.Id + " " + pageEntry.Version);
@@ -83,28 +105,15 @@ namespace NetStandardTypes.NugetWalker
                         {
                             log.WriteLine("Ignoring due to platform: " + pageEntry.Id + " " + pageEntry.Version);
                             if (ignoredExisting != null)
-                            {
                                 ignoredExisting.PackageVersion = version;
-                            }
                             else
-                            {
-                                ignoredDueToPlatform.Add(new PackageEntry
-                                {
-                                    LowercasePackageId = pageEntry.Id.ToLowerInvariant(),
-                                    PackageVersion = version,
-                                });
-                            }
+                                ignoredDueToPlatform.Add(new PackageEntryBase(lowercasePackageId, version));
                             continue;
                         }
 
                         // Add a process request.
                         log.WriteLine("Will process: " + pageEntry.Id + " " + pageEntry.Version);
-                        result.Add(new PackageEntry
-                        {
-                            CommitId = pageEntry.CommitId,
-                            LowercasePackageId = pageEntry.Id.ToLowerInvariant(),
-                            PackageVersion = version,
-                        });
+                        result.Add(new PackageEntry(pageEntry.CommitId, lowercasePackageId, version));
                     }
                 }
             }
