@@ -36,6 +36,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetWalker.Logic", "Functi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetWalker.LocalRunner", "Functions\NugetWalker.LocalRunner\NugetWalker.LocalRunner.csproj", "{DBCB4BE6-DDF0-471E-BBF3-B40892C36F47}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Util", "Util", "{69F1EA77-12BA-4E25-AC59-E79005FFEAD2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FindFirstNetStandardPackage", "FindFirstNetStandardPackage\FindFirstNetStandardPackage.csproj", "{438B9F38-010A-420E-BC65-B01BB3BCDE82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +78,10 @@ Global
 		{DBCB4BE6-DDF0-471E-BBF3-B40892C36F47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBCB4BE6-DDF0-471E-BBF3-B40892C36F47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBCB4BE6-DDF0-471E-BBF3-B40892C36F47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{438B9F38-010A-420E-BC65-B01BB3BCDE82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{438B9F38-010A-420E-BC65-B01BB3BCDE82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{438B9F38-010A-420E-BC65-B01BB3BCDE82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{438B9F38-010A-420E-BC65-B01BB3BCDE82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,5 +93,6 @@ Global
 		{CB6DD39B-2B0E-401D-9003-368BAB93E5F8} = {09DE6C32-829E-4D09-848A-01788BB90C28}
 		{787B6730-FC01-4E61-8677-92095A5FF703} = {CB6DD39B-2B0E-401D-9003-368BAB93E5F8}
 		{DBCB4BE6-DDF0-471E-BBF3-B40892C36F47} = {CB6DD39B-2B0E-401D-9003-368BAB93E5F8}
+		{438B9F38-010A-420E-BC65-B01BB3BCDE82} = {69F1EA77-12BA-4E25-AC59-E79005FFEAD2}
 	EndGlobalSection
 EndGlobal

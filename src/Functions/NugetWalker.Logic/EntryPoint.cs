@@ -39,18 +39,29 @@ namespace NetStandardTypes.NugetWalker
             public string LowercasePackageId { get; private set; }
         }
 
-        private static async Task<List<PackageEntry>> InspectCatalogAsync(PackageTable table, TextWriter log)
+        private sealed class Results
+        {
+            public List<PackageEntry> PackagesToProcess { get; } = new List<PackageEntry>();
+            public string Bokmark { get; set; }
+        }
+
+        private static async Task<Results> InspectCatalogAsync(PackageTable table, TextWriter log)
         {
             var ignoredDueToPlatform = new List<PackageEntryBase>();
-            var result = new List<PackageEntry>();
+            var result = new Results();
             var index = await ServiceIndex.CreateAsync();
-            var catalog = await index.GetCatalogAsync();
+            var catalog = await index.GetCatalogAsync(reversed: true);
+            string bookmark = null;
+            var bookmarkFound = false;
             using (var pageEnumerator = catalog.Pages().GetEnumerator())
             {
                 while (await pageEnumerator.MoveNext())
                 {
                     foreach (var pageEntry in pageEnumerator.Current.Entries())
                     {
+                        if (pageEntry.CommitId == bookmark)
+                            bookmarkFound = true;
+
                         // Parse the version.
                         NuGetVersion version;
                         if (!NuGetVersion.TryParse(pageEntry.Version, out version))
@@ -64,7 +75,7 @@ namespace NetStandardTypes.NugetWalker
                         var key = lowercasePackageId + (version.IsPrerelease ? "1" : "0");
 
                         // Check to see if we have a newer in-memory entry already processed for this key.
-                        var resultExisting = result.FirstOrDefault(x => x.Key == key);
+                        var resultExisting = result.PackagesToProcess.FirstOrDefault(x => x.Key == key);
                         if (resultExisting != null && version <= resultExisting.PackageVersion)
                         {
                             log.WriteLine("Already going to process " + resultExisting.PackageVersion + ": " + pageEntry.Id + " " + pageEntry.Version);
@@ -82,12 +93,11 @@ namespace NetStandardTypes.NugetWalker
                         // Look up the existing table entry, if any.
                         var existing = await table.TryGetVersionCommitAsync(pageEntry.Id, pageEntry.Version);
                         
-                        // TODO: Change to a global bookmark and pass it to the catalog enumerator. This allows json files to be prepended *or* appended to.
                         // If the existing table entry is this same exact commit, then we're done.
                         if (existing != null && string.Equals(existing.CommitId, pageEntry.CommitId, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            log.WriteLine("Reached bookmark: " + pageEntry.Id + " " + pageEntry.Version + " at " + pageEntry.CommitId);
-                            return result;
+                            log.WriteLine("Already processed: " + pageEntry.Id + " " + pageEntry.Version + " at " + pageEntry.CommitId);
+                            continue;
                         }
 
                         // If the existing table entry is newer than this one, then skip this one.
@@ -113,9 +123,12 @@ namespace NetStandardTypes.NugetWalker
 
                         // Add a process request.
                         log.WriteLine("Will process: " + pageEntry.Id + " " + pageEntry.Version);
-                        result.Add(new PackageEntry(pageEntry.CommitId, lowercasePackageId, version));
+                        result.PackagesToProcess.Add(new PackageEntry(pageEntry.CommitId, lowercasePackageId, version));
                     }
                 }
+
+                if (bookmarkFound)
+                    return result;
             }
             return result;
         }
@@ -128,12 +141,12 @@ namespace NetStandardTypes.NugetWalker
             {
                 // Parse the entire catalog, until the bookmark.
                 var actions = await InspectCatalogAsync(table, log);
-                log.WriteLine("Done examining catalog; found: " + actions.Count);
+                log.WriteLine("Done examining catalog; found: " + actions.PackagesToProcess.Count);
 
                 // In catalog order (oldest to newest), place the message in the queue and then update the table.
-                for (int i = actions.Count - 1; i >= 0; --i)
+                for (int i = actions.PackagesToProcess.Count - 1; i >= 0; --i)
                 {
-                    var action = actions[i];
+                    var action = actions.PackagesToProcess[i];
                     await processPackageQueue.AddAsync(new IndexPackageRequest
                     {
                         PackageId = action.LowercasePackageId,
@@ -144,6 +157,8 @@ namespace NetStandardTypes.NugetWalker
                     // Mark it as awaiting processing.
                     await table.SetVersionAsync(action.LowercasePackageId, action.PackageVersion, action.CommitId);
                 }
+
+                // TODO: Update bookmark
             }
         }
 
