@@ -5,51 +5,32 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using NuGetHelpers;
 using static NuGetCatalog.Globals;
 
 namespace NuGetCatalog
 {
     public sealed class Catalog
     {
-        private readonly dynamic _content;
-        private readonly bool _reversed;
-
-        internal Catalog(dynamic content, bool reversed)
+        public Catalog(JToken content)
         {
-            _content = content;
-            _reversed = reversed;
+            Items = content.GetNonNullValue<JArray>("items").Select(x => new Item(x)).ToList();
         }
 
-        /// <summary>
-        /// Returns all catalog pages.
-        /// </summary>
-        public IAsyncEnumerable<CatalogPage> Pages()
+        public IReadOnlyList<Item> Items { get; }
+
+        public sealed class Item
         {
-            var pages = (JArray)_content.items;
-            if (pages == null)
-                return AsyncEnumerable.Throw<CatalogPage>(UnrecognizedJson());
-            if (_reversed)
+            private readonly JToken _content;
+
+            public Item(JToken content)
             {
-                return AsyncEnumerableEx.Generate(pages.Count - 1, i => i >= 0, i => i - 1, async i =>
-                {
-                    var url = (string) pages[i]["@id"];
-                    if (url == null)
-                        throw UnrecognizedJson();
-                    Console.WriteLine("Next page: " + url);
-                    return new CatalogPage(await Client.GetJsonAsync(url), _reversed);
-                });
+                _content = content;
             }
-            else
-            {
-                return AsyncEnumerableEx.Generate(0, i => i < pages.Count, i => i + 1, async i =>
-                {
-                    var url = (string)pages[i]["@id"];
-                    if (url == null)
-                        throw UnrecognizedJson();
-                    Console.WriteLine("Next page: " + url);
-                    return new CatalogPage(await Client.GetJsonAsync(url), _reversed);
-                });
-            }
+
+            public string Id => _content.GetNonNullValue<string>("@id");
+
+            public async Task<CatalogPage> GetCatalogPageAsync() => new CatalogPage(await Client.GetJsonAsync(Id));
         }
     }
 }

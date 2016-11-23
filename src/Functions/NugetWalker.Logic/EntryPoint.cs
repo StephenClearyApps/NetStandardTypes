@@ -50,81 +50,79 @@ namespace NetStandardTypes.NugetWalker
             var ignoredDueToPlatform = new List<PackageEntryBase>();
             var result = new Results();
             var index = await ServiceIndex.CreateAsync();
-            var catalog = await index.GetCatalogAsync(reversed: true);
+            var catalog = await index.GetCatalogAsync();
             string bookmark = null;
             var bookmarkFound = false;
-            using (var pageEnumerator = catalog.Pages().GetEnumerator())
+            foreach (var catalogItem in catalog.Items)
             {
-                while (await pageEnumerator.MoveNext())
+                var page = await catalogItem.GetCatalogPageAsync();
+                foreach (var pageItem in page.Items)
                 {
-                    foreach (var pageEntry in pageEnumerator.Current.Entries())
+                    if (pageItem.CommitId == bookmark)
+                        bookmarkFound = true;
+
+                    // Parse the version.
+                    NuGetVersion version;
+                    if (!NuGetVersion.TryParse(pageItem.Version, out version))
                     {
-                        if (pageEntry.CommitId == bookmark)
-                            bookmarkFound = true;
-
-                        // Parse the version.
-                        NuGetVersion version;
-                        if (!NuGetVersion.TryParse(pageEntry.Version, out version))
-                        {
-                            log.WriteLine("Unable to parse version: " + pageEntry.Id + " " + pageEntry.Version);
-                            continue;
-                        }
-
-                        // Generate the key (id + prerelease flag).
-                        var lowercasePackageId = pageEntry.Id.ToLowerInvariant();
-                        var key = lowercasePackageId + (version.IsPrerelease ? "1" : "0");
-
-                        // Check to see if we have a newer in-memory entry already processed for this key.
-                        var resultExisting = result.PackagesToProcess.FirstOrDefault(x => x.Key == key);
-                        if (resultExisting != null && version <= resultExisting.PackageVersion)
-                        {
-                            log.WriteLine("Already going to process " + resultExisting.PackageVersion + ": " + pageEntry.Id + " " + pageEntry.Version);
-                            continue;
-                        }
-
-                        // Check to see if we have a newer in-memory ignored entry already processed for this key.
-                        var ignoredExisting = ignoredDueToPlatform.FirstOrDefault(x => x.Key == key);
-                        if (ignoredExisting != null && version <= ignoredExisting.PackageVersion)
-                        {
-                            log.WriteLine("Already ignored due to platform: " + pageEntry.Id + " " + pageEntry.Version);
-                            continue;
-                        }
-
-                        // Look up the existing table entry, if any.
-                        var existing = await table.TryGetVersionCommitAsync(pageEntry.Id, pageEntry.Version);
-                        
-                        // If the existing table entry is this same exact commit, then we're done.
-                        if (existing != null && string.Equals(existing.CommitId, pageEntry.CommitId, StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            log.WriteLine("Already processed: " + pageEntry.Id + " " + pageEntry.Version + " at " + pageEntry.CommitId);
-                            continue;
-                        }
-
-                        // If the existing table entry is newer than this one, then skip this one.
-                        //  (This can only happen if NuGet packages are published out of order. Which *does* seem to happen!)
-                        if (existing?.Version != null && version <= NuGetVersion.Parse(existing.Version))
-                        {
-                            log.WriteLine("Ignoring due to existing version " + existing.Version + ": " + pageEntry.Id + " " + pageEntry.Version);
-                            continue;
-                        }
-
-                        // Ensure the package supports netstandard.
-                        var package = await pageEntry.GetPackageAsync();
-                        var frameworks = package.Metadata().GetSupportedFrameworksWithRef().ToArray();
-                        if (!frameworks.Any(x => new FrameworkName(x.DotNetFrameworkName).IsNetStandard()))
-                        {
-                            log.WriteLine("Ignoring due to platform: " + pageEntry.Id + " " + pageEntry.Version);
-                            if (ignoredExisting != null)
-                                ignoredExisting.PackageVersion = version;
-                            else
-                                ignoredDueToPlatform.Add(new PackageEntryBase(lowercasePackageId, version));
-                            continue;
-                        }
-
-                        // Add a process request.
-                        log.WriteLine("Will process: " + pageEntry.Id + " " + pageEntry.Version);
-                        result.PackagesToProcess.Add(new PackageEntry(pageEntry.CommitId, lowercasePackageId, version));
+                        log.WriteLine("Unable to parse version: " + pageItem.Id + " " + pageItem.Version);
+                        continue;
                     }
+
+                    // Generate the key (id + prerelease flag).
+                    var lowercasePackageId = pageItem.Id.ToLowerInvariant();
+                    var key = lowercasePackageId + (version.IsPrerelease ? "1" : "0");
+
+                    // Check to see if we have a newer in-memory entry already processed for this key.
+                    var resultExisting = result.PackagesToProcess.FirstOrDefault(x => x.Key == key);
+                    if (resultExisting != null && version <= resultExisting.PackageVersion)
+                    {
+                        log.WriteLine("Already going to process " + resultExisting.PackageVersion + ": " + pageItem.Id + " " + pageItem.Version);
+                        continue;
+                    }
+
+                    // Check to see if we have a newer in-memory ignored entry already processed for this key.
+                    var ignoredExisting = ignoredDueToPlatform.FirstOrDefault(x => x.Key == key);
+                    if (ignoredExisting != null && version <= ignoredExisting.PackageVersion)
+                    {
+                        log.WriteLine("Already ignored due to platform: " + pageItem.Id + " " + pageItem.Version);
+                        continue;
+                    }
+
+                    // Look up the existing table entry, if any.
+                    var existing = await table.TryGetVersionCommitAsync(pageItem.Id, pageItem.Version);
+                        
+                    // If the existing table entry is this same exact commit, then we're done.
+                    if (existing != null && string.Equals(existing.CommitId, pageItem.CommitId, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        log.WriteLine("Already processed: " + pageItem.Id + " " + pageItem.Version + " at " + pageItem.CommitId);
+                        continue;
+                    }
+
+                    // If the existing table entry is newer than this one, then skip this one.
+                    //  (This can only happen if NuGet packages are published out of order. Which *does* seem to happen!)
+                    if (existing?.Version != null && version <= NuGetVersion.Parse(existing.Version))
+                    {
+                        log.WriteLine("Ignoring due to existing version " + existing.Version + ": " + pageItem.Id + " " + pageItem.Version);
+                        continue;
+                    }
+
+                    // Ensure the package supports netstandard.
+                    var package = await pageItem.GetPackageAsync();
+                    var frameworks = package.Metadata().GetSupportedFrameworksWithRef().ToArray();
+                    if (!frameworks.Any(x => new FrameworkName(x.DotNetFrameworkName).IsNetStandard()))
+                    {
+                        log.WriteLine("Ignoring due to platform: " + pageItem.Id + " " + pageItem.Version);
+                        if (ignoredExisting != null)
+                            ignoredExisting.PackageVersion = version;
+                        else
+                            ignoredDueToPlatform.Add(new PackageEntryBase(lowercasePackageId, version));
+                        continue;
+                    }
+
+                    // Add a process request.
+                    log.WriteLine("Will process: " + pageItem.Id + " " + pageItem.Version);
+                    result.PackagesToProcess.Add(new PackageEntry(pageItem.CommitId, lowercasePackageId, version));
                 }
 
                 if (bookmarkFound)
@@ -160,14 +158,6 @@ namespace NetStandardTypes.NugetWalker
 
                 // TODO: Update bookmark
             }
-        }
-
-        private static IEnumerable<CatalogPageEntry> Fixup(IEnumerable<CatalogPageEntry> entries)
-        {
-            // The json files are often out-of-order and not even unique across (id, version). So this function puts at least this page's entries in an appropriate order.
-            return entries
-                .Distinct(EqualityComparerBuilder.For<CatalogPageEntry>().EquateBy(x => x.Id.ToLowerInvariant() + "@" + (NuGetVersion.Parse(x.Version).IsPrerelease ? "1" : "0")))
-                .OrderByDescending(x => x.Version).ThenByDescending(x => x.CommitTimestamp);
         }
     }
 }

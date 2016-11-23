@@ -23,7 +23,7 @@ namespace NuGetCatalog
             return new ServiceIndex(await Client.GetJsonAsync(V3Url).ConfigureAwait(false));
         }
 
-        public async Task<Catalog> GetCatalogAsync(bool reversed)
+        public async Task<Catalog> GetCatalogAsync()
         {
             var resources = _content.resources as IEnumerable<dynamic>;
             if (resources == null)
@@ -34,7 +34,7 @@ namespace NuGetCatalog
             var catalogUrl = (string)catalog["@id"];
             if (catalogUrl == null)
                 throw UnrecognizedJson();
-            return new Catalog(await Client.GetJsonAsync(catalogUrl).ConfigureAwait(false), reversed);
+            return new Catalog(await Client.GetJsonAsync(catalogUrl).ConfigureAwait(false));
         }
     }
 }

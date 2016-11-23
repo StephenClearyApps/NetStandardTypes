@@ -1,38 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
+using NuGetHelpers;
 using static NuGetCatalog.Globals;
 
 namespace NuGetCatalog
 {
     public sealed class CatalogPage
     {
-        private readonly dynamic _content;
-        private readonly bool _reversed;
-
-        internal CatalogPage(dynamic content, bool reversed)
+        public CatalogPage(JToken content)
         {
-            _content = content;
-            _reversed = reversed;
+            Items = content.GetNonNullValue<JArray>("items").Select(x => new Item(x)).ToList();
         }
 
-        public IEnumerable<CatalogPageEntry> Entries()
+        public IReadOnlyList<Item> Items { get; }
+
+        public sealed class Item
         {
-            // Create the initial list of entries.
-            var packages = (JArray)_content.items;
-            if (packages == null)
-                throw UnrecognizedJson();
-            if (_reversed)
+            private readonly JToken _content;
+
+            internal Item(JToken content)
             {
-                for (int i = packages.Count - 1; i >= 0; --i)
-                    yield return new CatalogPageEntry(_content.items[i]);
+                _content = content;
             }
-            else
-            {
-                for (int i = 0; i < packages.Count; ++i)
-                    yield return new CatalogPageEntry(_content.items[i]);
-            }
+
+            public PackageIdentity PackageIdentity => new PackageIdentity(Id, NuGetVersion.Parse(Version));
+
+            public string Id => _content.GetNonNullValue<string>("nuget:id");
+            public string Version => _content.GetNonNullValue<string>("nuget:version");
+            public DateTimeOffset? CommitTimestamp => _content.GetDateTimeOffset("commitTimestamp");
+            public string CommitId => _content.GetNonNullValue<string>("commitId");
+
+            public async Task<CatalogPackage> GetPackageAsync() => new CatalogPackage(await Client.GetJsonAsync(Id));
         }
     }
 }
