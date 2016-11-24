@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
@@ -22,27 +23,28 @@ namespace NetStandardTypes.NugetWalker
                 Key = lowercasePackageId + "@" + (packageVersion.IsPrerelease ? "1" : "0");
             }
 
-            public string Key { get; private set; }
+            public string Key { get; }
             public NuGetVersion PackageVersion { get; set; }
         }
 
         private sealed class PackageEntry : PackageEntryBase
         {
-            public PackageEntry(string commitId, string lowercasePackageId, NuGetVersion packageVersion)
+            public PackageEntry(int page, string commitId, string lowercasePackageId, NuGetVersion packageVersion)
                 : base(lowercasePackageId, packageVersion)
             {
+                Page = page;
                 CommitId = commitId;
                 LowercasePackageId = lowercasePackageId;
             }
 
-            public string CommitId { get; private set; }
-            public string LowercasePackageId { get; private set; }
+            public int Page { get; }
+            public string CommitId { get; }
+            public string LowercasePackageId { get; }
         }
 
         private sealed class Results
         {
             public List<PackageEntry> PackagesToProcess { get; } = new List<PackageEntry>();
-            public string Bokmark { get; set; }
         }
 
         private static async Task<Results> InspectCatalogAsync(PackageTable table, TextWriter log)
@@ -51,16 +53,14 @@ namespace NetStandardTypes.NugetWalker
             var result = new Results();
             var index = await ServiceIndex.CreateAsync();
             var catalog = await index.GetCatalogAsync();
-            string bookmark = null;
             var bookmarkFound = false;
-            foreach (var catalogItem in catalog.Items)
+
+            // Catalog page 1532 contains the first library that supported netstandard: csharp2colorized 1.0.0-beta1
+            for (int i = catalog.Items.Count - 1; i >= 1532; --i)
             {
-                var page = await catalogItem.GetCatalogPageAsync();
+                var page = await catalog.Items[i].GetCatalogPageAsync();
                 foreach (var pageItem in page.Items)
                 {
-                    if (pageItem.CommitId == bookmark)
-                        bookmarkFound = true;
-
                     // Parse the version.
                     NuGetVersion version;
                     if (!NuGetVersion.TryParse(pageItem.Version, out version))
@@ -96,6 +96,7 @@ namespace NetStandardTypes.NugetWalker
                     if (existing != null && string.Equals(existing.CommitId, pageItem.CommitId, StringComparison.InvariantCultureIgnoreCase))
                     {
                         log.WriteLine("Already processed: " + pageItem.Id + " " + pageItem.Version + " at " + pageItem.CommitId);
+                        bookmarkFound = true;
                         continue;
                     }
 
@@ -122,7 +123,7 @@ namespace NetStandardTypes.NugetWalker
 
                     // Add a process request.
                     log.WriteLine("Will process: " + pageItem.Id + " " + pageItem.Version);
-                    result.PackagesToProcess.Add(new PackageEntry(pageItem.CommitId, lowercasePackageId, version));
+                    result.PackagesToProcess.Add(new PackageEntry(i, pageItem.CommitId, lowercasePackageId, version));
                 }
 
                 if (bookmarkFound)
@@ -141,22 +142,22 @@ namespace NetStandardTypes.NugetWalker
                 var actions = await InspectCatalogAsync(table, log);
                 log.WriteLine("Done examining catalog; found: " + actions.PackagesToProcess.Count);
 
-                // In catalog order (oldest to newest), place the message in the queue and then update the table.
-                for (int i = actions.PackagesToProcess.Count - 1; i >= 0; --i)
+                // In catalog order (oldest page to newest page), place all the messages in the queue and then update the table entries.
+                foreach (var group in actions.PackagesToProcess.GroupBy(x => x.Page).OrderBy(x => x.Key))
                 {
-                    var action = actions.PackagesToProcess[i];
-                    await processPackageQueue.AddAsync(new IndexPackageRequest
+                    foreach (var action in group)
                     {
-                        PackageId = action.LowercasePackageId,
-                        PackageVersion = action.PackageVersion.ToString(),
-                    });
+                        await processPackageQueue.AddAsync(new IndexPackageRequest
+                        {
+                            PackageId = action.LowercasePackageId,
+                            PackageVersion = action.PackageVersion.ToString(),
+                        });
+                    }
                     await processPackageQueue.FlushAsync();
 
-                    // Mark it as awaiting processing.
-                    await table.SetVersionAsync(action.LowercasePackageId, action.PackageVersion, action.CommitId);
+                    foreach (var action in group)
+                        await table.SetVersionAsync(action.LowercasePackageId, action.PackageVersion, action.CommitId);
                 }
-
-                // TODO: Update bookmark
             }
         }
     }
